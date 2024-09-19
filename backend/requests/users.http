@@ -1,0 +1,35 @@
+@baseUrl=http://localhost:5000/api/users
+
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "username": "Marti",
+    "email": "martina@patti.com",
+    "password": "87654321"
+}
+
+###
+
+GET {{baseUrl}}
+
+###
+
+GET {{baseUrl}}/66ebe0f8e783b9f89687aa46
+
+
+###
+
+PUT {{baseUrl}}/66ebe0f8e783b9f89687aa46
+Content-Type: application/json
+
+{
+      "name": "PatriziaPatti",
+      "email": "patrizia@ppatti.com",
+      "password":"12345678"
+} 
+
+###
+
+DELETE {{baseUrl}}/66ec2298234970fc596301bc
+
