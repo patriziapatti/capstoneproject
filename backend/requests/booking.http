@@ -1,0 +1,44 @@
+@baseUrl=http://localhost:5000/api/bookings
+
+GET {{baseUrl}}
+
+###
+
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "customer": "66ec2388234970fc596301d0",
+    "checkInDate": "2024-10-06",
+    "checkOutDate": "2024-10-09",
+    "room": "66ed955afd35acb318a122ca",
+    "pax": {
+        "adults": 4,
+        "children": 0
+    },
+    "status": "reserved"
+}
+
+###
+
+GET {{baseUrl}}/66ed8e1b047056a065635764
+
+###
+
+PUT {{baseUrl}}/66ed8d2e047056a065635756
+Content-Type: application/json
+
+{
+    "customer": "66ec2388234970fc596301d0",
+    "checkInDate": "2024-10-16",
+    "checkOutDate": "2024-10-17",
+    "pax": {
+        "adults": 1,
+        "children": 0
+    },
+    "status": "reserved"
+}
+
+###
+
+DELETE {{baseUrl}}/66ed8d2e047056a065635756

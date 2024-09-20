@@ -1,0 +1,35 @@
+@baseUrl=http://localhost:5000/api/rooms
+
+GET {{baseUrl}}
+
+###
+
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "roomNumber": "304",
+    "type": "Family",
+    "price": "190",
+    "status": "available"
+}
+
+###
+
+GET {{baseUrl}}/66ed955afd35acb318a122ca
+
+###
+
+PUT {{baseUrl}}/66ed955afd35acb318a122ca
+Content-Type: application/json
+
+{
+    "roomNumber": "203",
+    "type": "Double",
+    "price": "190",
+    "status": "available"
+}
+
+###
+
+DELETE {{baseUrl}}/66ed956dfd35acb318a122ce

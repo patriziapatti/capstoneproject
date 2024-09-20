@@ -1,0 +1,38 @@
+@baseUrl=http://localhost:5000/api/customers
+
+POST {{baseUrl}}
+Content-Type: application/json
+
+{
+    "name": "Pippa",
+    "surname": "Peppa",
+    "email": "pippa@patti",
+    "phone": "3333333333",
+    "dateOfBirth": "1987-08-12"
+}
+
+###
+
+GET {{baseUrl}}
+
+###
+
+GET {{baseUrl}}/66ed98d2a4652d0e175c1ccf
+
+
+###
+
+PUT {{baseUrl}}/66ed98d2a4652d0e175c1ccf
+Content-Type: application/json
+
+{
+    "name": "Martina",
+    "surname": "Patti",
+    "email": "martina@patti",
+    "phone": "88888888",
+    "dateOfBirth": "1987-08-12"
+}
+
+###
+
+DELETE {{baseUrl}}/66ed9930762fa13aa6e11984

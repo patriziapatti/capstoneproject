@@ -6,6 +6,9 @@ import morgan from 'morgan';
 import helmet from 'helmet'
 import authenticationRouter from './routes/authenticationRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import bookingRouter from './routes/bookingRoutes.js';
+import roomRouter from './routes/roomRoutes.js';
+import customerRouter from './routes/customerRoutes.js';
 
 const port = process.env.PORT || 5000;
 
@@ -23,6 +26,9 @@ server.use(morgan("dev"))// è un middleware che mi mostra tutti i log delle ric
 server.use(helmet ())//middleware che ci da la sicurezza per il backend
 server.use('/api/auth', authenticationRouter)
 server.use('/api/users', userRouter)
+server.use('/api/bookings', bookingRouter)
+server.use('/api/rooms', roomRouter)
+server.use('/api/customers', customerRouter)
 // server.use('api/bookings')
 // server.use('api/customers')
 // server.use('api/rooms')

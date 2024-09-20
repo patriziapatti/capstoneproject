@@ -1,20 +1,20 @@
-import User from '../models/userSchema.js'
+import Customer from '../models/customerSchema.js'
 
-export const getAllUsers = async (req,res)=>{
+export const getAllCustomer = async (req,res)=>{
     const page = req.query.page || 1
     let perPage = req.query.perPage || 5
     perPage = perPage > 10 ? 5 : perPage
     try {
-        const allUsers = await User.find({})
+        const allCustomer = await Customer.find({})
         .collation({locale: 'it'}) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-        .sort({username:1}) 
+        .sort({surname:1}) 
         .skip((page-1)*perPage)//salto la pagina precedente
         .limit(perPage)
-        const totalResults = await User.countDocuments()// mi da il numero totale di documenti
+        const totalResults = await Customer.countDocuments()// mi da il numero totale di documenti
         const totalPages = Math.ceil(totalResults / perPage )  
         // res.send(allAuthors)
         res.send({
-            dati: allUsers,
+            dati: allCustomer,
             totalResults,
             totalPages,
             page,
@@ -25,50 +25,50 @@ export const getAllUsers = async (req,res)=>{
     }  
 }
 
-export const getSingleUser = async (req,res)=>{
+export const getSingleCustomer = async (req,res)=>{
     const {id} =req.params
     try {
-        const user = await User.findById(id)
-        res.status(200).send(user) 
+        const customer = await Customer.findById(id)
+        res.status(200).send(customer) 
     } catch (error) {
         res.status(404).send({message: 'Not Found'}) 
     } 
 }
 
-export const addUser = async (req,res)=>{
+export const addCustomer = async (req,res)=>{
     //crea un nuova istanza del modello user con i dati definiti nella parentesi tonde (prendendoli dal body)
     // console.log(req.body)
-    const user = new User (req.body)
+    const customer = new Customer (req.body)
     try {
          //salva i dati prendendoli nel db , prendendoli dall'istanza
-        const newUser = await user.save()
+        const newCustomer = await customer.save()
         //invia i dati al database
-        res.status(200).send(newUser)
+        res.status(200).send(newCustomer)
     } catch (error) {
         res.status(400).send(error)
     }  
 }
 
-export const editUser = async (req,res)=>{
+export const editCustomer = async (req,res)=>{
     const {id} =req.params
     try {
-        const user = await User.findByIdAndUpdate(id, req.body, {new:true}) //new serve per restituire in author l'oggetto appena inserito, altrimenti non lo restituisce
-        await user.save();
+        const customer = await Customer.findByIdAndUpdate(id, req.body, {new:true}) //new serve per restituire in author l'oggetto appena inserito, altrimenti non lo restituisce
+        await customer.save();
         // res.send(`sono la put e modifico l'autore con id ${id}`)
-        res.status(200).send(user)
+        res.status(200).send(customer)
     } catch (error) {
         res.status(400).send(error)
     }
     
 }
 
-export const deleteUser = async (req,res)=>{
+export const deleteCustomer = async (req,res)=>{
     const {id} =req.params
     try {
         //se l'id esiste nello schema allora fai la delete
-        if (await User.exists({_id:id})){
-            await User.findByIdAndDelete(id)
-            res.status(200).send(`ho eliminato l'utente con id: ${id}`)
+        if (await Customer.exists({_id:id})){
+            await Customer.findByIdAndDelete(id)
+            res.status(200).send(`ho eliminato il cliente con id: ${id}`)
         }else {res.status(404).send({message: `ID ${id} not found`})}
         
     } catch (error) {

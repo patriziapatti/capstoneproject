@@ -18,6 +18,17 @@ const bookingSchema = new Schema(
             type: Date,
             required: true,
         },
+        pax: {
+            adults: {
+                type: Number,
+                required: true,  
+            },
+            children: {
+                type: Number,
+                required: true
+            },
+        },
+
         status: {
             type: String,
             required: true,

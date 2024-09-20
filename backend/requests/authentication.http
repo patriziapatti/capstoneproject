@@ -4,9 +4,9 @@ POST {{baseUrl}}/register
 Content-Type: application/json
 
 {
-    "username": "Pat",
-    "email": "patrizia@patti.com",
-    "password": "12345678"
+    "username": "SalkaMessana",
+    "email": "salka@messana.com",
+    "password": "111055"
 }
 
 ###
