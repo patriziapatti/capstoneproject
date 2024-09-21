@@ -1,4 +1,6 @@
 import Booking from '../models/bookingSchema.js'
+import Customer from '../models/customerSchema.js'
+import transport from '../services/mailService.js'
 
 export const getAllBookings = async (req,res)=>{
     const page = req.query.page || 1
@@ -37,14 +39,27 @@ export const getSingleBooking = async (req,res)=>{
 export const addBooking = async (req,res)=>{
    
     const booking = new Booking (req.body)
+    let newBooking
     try {
          //salva i dati prendendoli nel db , prendendoli dall'istanza
-        const newBooking = await booking.save()
+        newBooking = await booking.save()
         //invia i dati al database
         res.status(200).send(newBooking)
     } catch (error) {
-        res.status(400).send(error)
+       return res.status(400).send(error)
     }  
+    try {
+        const customer = await Customer.findById(newBooking.customer)
+        await transport.sendMail({
+            from: 'noreply@epicoders.com', // sender address
+            to: customer.email, // list of receivers
+            subject: "New Booking", // Subject line
+            text: `Your Reservation from ${booking.checkInDate} to ${booking.checkOutDate} is confirmed!`, // plain text body
+            html: `Your Reservation from ${booking.checkInDate} to ${booking.checkOutDate} is confirmed!` // html body
+        })
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export const editBooking = async (req,res)=>{

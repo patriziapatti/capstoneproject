@@ -8,12 +8,12 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "customer": "66ec2388234970fc596301d0",
-    "checkInDate": "2024-10-06",
-    "checkOutDate": "2024-10-09",
-    "room": "66ed955afd35acb318a122ca",
+    "customer": "66ee82f15bf4f4786564f97d",
+    "checkInDate": "2025-01-01",
+    "checkOutDate": "2025-01-02",
+    "room": "66ed94fbfd35acb318a122bc",
     "pax": {
-        "adults": 4,
+        "adults": 1,
         "children": 0
     },
     "status": "reserved"
