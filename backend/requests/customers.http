@@ -4,11 +4,11 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "Pippa",
-    "surname": "Peppa",
-    "email": "pippa@patti.com",
-    "phone": "3333333333",
-    "dateOfBirth": "1987-08-12"
+    "name": "Antonio",
+    "surname": "Fedele",
+    "email": "antonio@fedele.com",
+    "phone": "3292222222",
+    "dateOfBirth": "1995-09-21"
 }
 
 ###
