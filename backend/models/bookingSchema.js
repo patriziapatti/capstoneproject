@@ -35,6 +35,10 @@ const bookingSchema = new Schema(
             enum: ['reserved', 'checkedIn','checkedOut'],
             default: 'reserved'
         },
+        totalPrice: {
+            type: Number
+        }
+
     },
     {collection: "bookings", timestamps: true}
 )
