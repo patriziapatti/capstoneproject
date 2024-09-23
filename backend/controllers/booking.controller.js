@@ -30,7 +30,7 @@ export const getAllBookings = async (req, res) => {
 export const getSingleBooking = async (req, res) => {
     const { id } = req.params
     try {
-        const booking = await Booking.findById(id)
+        const booking = await Booking.findById(id).populate('customer').populate('room')
         res.status(200).send(booking)
     } catch (error) {
         res.status(404).send({ message: 'Not Found' })
