@@ -33,3 +33,7 @@ Content-Type: application/json
 ###
 
 DELETE {{baseUrl}}/66ed956dfd35acb318a122ce
+
+###
+
+GET {{baseUrl}}/availableRoom

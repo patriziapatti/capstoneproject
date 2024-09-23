@@ -1,11 +1,13 @@
 @baseUrl=http://localhost:5000/api/bookings
 
 GET {{baseUrl}}
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
 
 ###
 
 POST {{baseUrl}}
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
 
 {
     "customer": "66f021ecc3d4043796ef0459",
@@ -23,11 +25,13 @@ Content-Type: application/json
 ###
 
 GET {{baseUrl}}/66f01747de008172b8a5c518
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
 
 ###
 
 PUT {{baseUrl}}/66f01b141c57b511708ef9fe
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
 
 {
     "customer": "66ed98d2a4652d0e175c1ccf",
@@ -43,17 +47,20 @@ Content-Type: application/json
 
 ###
 
-DELETE {{baseUrl}}/66f016e1de008172b8a5c510
+DELETE {{baseUrl}}/66f1aa00999cf8489a268c2a
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
 
 ###
 
 GET {{baseUrl}}/todayarr
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
 
 ###
 
 GET {{baseUrl}}/todaydep
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
 
 ###
 
 GET {{baseUrl}}/inhouse
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI

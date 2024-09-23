@@ -1,4 +1,5 @@
 import Room from '../models/roomSchema.js'
+import Booking from '../models/bookingSchema.js'
 
 export const getAllRooms = async (req,res)=>{
     const page = req.query.page || 1
@@ -7,7 +8,7 @@ export const getAllRooms = async (req,res)=>{
     try {
         const allRooms = await Room.find({})
         .collation({locale: 'it'}) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-        .sort({type:1}) 
+        .sort({roomNumber:1}) 
         .skip((page-1)*perPage)//salto la pagina precedente
         .limit(perPage)
         const totalResults = await Room.countDocuments()// mi da il numero totale di documenti
@@ -73,3 +74,61 @@ export const deleteRoom = async (req,res)=>{
         res.status(404).send({message: `ID ${id} not found`})
     }
 }
+
+export const getAvailableRooms = async (req, res) => {
+    const page = req.query.page || 1;
+    let perPage = req.query.perPage || 5;
+    perPage = perPage > 10 ? 5 : perPage;
+
+    try {
+        // Ottieni la data odierna senza l'orario
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Trova tutte le prenotazioni che coprono la data odierna
+        const occupiedRooms = await Booking.find({
+            checkInDate: { $lte: today },
+            checkOutDate: { $gt: today }
+        }).select('room');
+
+        // Crea un array con gli ID delle stanze occupate
+        const occupiedRoomIds = occupiedRooms.map(booking => booking.room);
+
+        // Trova il numero totale di stanze disponibili
+        const totalResults = await Room.countDocuments({
+            _id: { $nin: occupiedRoomIds }
+        });
+
+        // Trova tutte le stanze disponibili con paginazione
+        const availableRooms = await Room.find({
+            _id: { $nin: occupiedRoomIds }
+            //L'operatore $nin seleziona i documenti in cui il valore di un campo specificato non corrisponde a nessuno dei valori presenti in un array. 
+            //È come dire "dammi tutti i documenti in cui il valore di questo campo non è nessuno di questi valori".
+            //Esempio:
+            //in una collezione di documenti Room vogliamo trovare tutte le stanze che non sono occupate, possiamo usare $nin:
+        })
+        .collation({ locale: 'it' }) // Serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
+        .sort({ roomNumber: 1 })
+        .skip((page - 1) * perPage) // Salta la pagina precedente
+        .limit(perPage); // Limita i risultati alla pagina corrente
+
+        const totalPages = Math.ceil(totalResults / perPage);
+
+        const notAvailable = await Room.countDocuments({
+            _id: { $in: occupiedRoomIds }
+            //L'operatore $in viene utilizzato per selezionare i documenti in cui il valore di un campo specificato è uguale a uno dei valori presenti in un array. 
+            //È come dire "dammi tutti i documenti in cui il valore di questo campo è uno di questi valori".
+            //Esempio:
+            //in una collezione di documenti Room, e vogliamo trovare tutte le stanze i cui ID sono presenti nell' array chiamato occupiedRoomIds.
+        });
+        res.status(200).json({
+            dati: availableRooms,
+            notAvailable: notAvailable,
+            totalResults,
+            totalPages,
+            page
+        });
+    } catch (error) {
+        res.status(500).send({ message: `Error fetching available rooms: ${error.message}` });
+    }
+};
