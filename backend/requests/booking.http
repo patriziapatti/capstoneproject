@@ -8,10 +8,10 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "customer": "66ed98d2a4652d0e175c1ccf",
-    "checkInDate": "2024-09-20",
-    "checkOutDate": "2024-09-25",
-    "room": "66ed951cfd35acb318a122c2",
+    "customer": "66f021ecc3d4043796ef0459",
+    "checkInDate": "2024-11-25",
+    "checkOutDate": "2024-10-20",
+    "room": "66ed957afd35acb318a122d0",
     "pax": {
         "adults": 2,
         "children": 0
@@ -31,12 +31,12 @@ Content-Type: application/json
 
 {
     "customer": "66ed98d2a4652d0e175c1ccf",
-    "checkInDate": "2024-10-25",
-    "checkOutDate": "2024-10-26",
-    "room": "66ed957afd35acb318a122d0",
+    "checkInDate": "2024-10-21",
+    "checkOutDate": "2024-10-23",
+    "room": "66ed951cfd35acb318a122c2",
     "pax": {
         "adults": 2,
-        "children": 0
+        "children": 2
     },
     "status": "reserved"
 }
@@ -48,3 +48,12 @@ DELETE {{baseUrl}}/66f016e1de008172b8a5c510
 ###
 
 GET {{baseUrl}}/todayarr
+
+###
+
+GET {{baseUrl}}/todaydep
+
+
+###
+
+GET {{baseUrl}}/inhouse

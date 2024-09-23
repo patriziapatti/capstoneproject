@@ -1,10 +1,12 @@
 import express from 'express';
-import { addBooking, deleteBooking, editBooking, getAllBookings, getSingleBooking, getTodaysArrivals } from '../controllers/booking.controller.js';
+import { addBooking, deleteBooking, editBooking, getAllBookings, getSingleBooking, getTodaysArrivals, getTodaysDeparture, getTodaysInHouse } from '../controllers/booking.controller.js';
 
 
 const bookingRouter = express.Router()
 
 bookingRouter.get('/todayarr', getTodaysArrivals)
+bookingRouter.get('/todaydep', getTodaysDeparture)
+bookingRouter.get('/inhouse', getTodaysInHouse)
 bookingRouter.get('/', getAllBookings)
 bookingRouter.get('/:id',getSingleBooking)
 bookingRouter.post('/', addBooking)
