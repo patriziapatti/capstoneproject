@@ -4,11 +4,11 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "name": "Antonio",
-    "surname": "Fedele",
-    "email": "antonio@fedele.com",
-    "phone": "3292222222",
-    "dateOfBirth": "1995-09-21"
+    "name": "Andrea",
+    "surname": "Ruocco",
+    "email": "andrea@ruocco.com",
+    "phone": "111111111",
+    "dateOfBirth": "1996-06-21"
 }
 
 ###
@@ -35,4 +35,4 @@ Content-Type: application/json
 
 ###
 
-DELETE {{baseUrl}}/66ed9930762fa13aa6e11984
+DELETE {{baseUrl}}/66f2e4e717514644ad6f4c9f

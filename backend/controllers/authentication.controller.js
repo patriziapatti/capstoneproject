@@ -47,5 +47,5 @@ export const login = async (req,res) => {
 }
 
 // export const me = async(req,res) =>{
-//     return res.send(req.loggedAuthor)
+//     return res.send(req.loggedUser)
 // }

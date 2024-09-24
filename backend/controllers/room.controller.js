@@ -62,16 +62,23 @@ export const editRoom = async (req,res)=>{
 }
 
 export const deleteRoom = async (req,res)=>{
-    const {id} =req.params
+    const {id} = req.params
     try {
-        //se l'id esiste nello schema allora fai la delete
-        if (await Room.exists({_id:id})){
-            await Room.findByIdAndDelete(id)
-            res.status(200).send(`ho eliminato la camera con id: ${id}`)
-        }else {res.status(404).send({message: `ID ${id} not found`})}
-        
+        //verifico se la room esiste
+        const roomExists = await Room.exists({_id: id})
+        if (!roomExists){
+            return res.status(404).send({message: `ID ${id} not found`})
+        }
+
+        //verifico se ci sono prenotazioni associate a questa room
+        const bookings = await Booking.find({room: id})
+        if (bookings.length > 0){
+            return res.status(400).send({ message: `La room con ID ${id} ha prenotazioni attive e non può essere eliminata.`});
+        }
+        await Room.findByIdAndDelete(id)
+        res.status(200).send(`ho eliminato la room con id: ${id}`)
     } catch (error) {
-        res.status(404).send({message: `ID ${id} not found`})
+        res.status(500).send({ message: `Errore del server durante l'eliminazione della room: ${error.message}` });
     }
 }
 
@@ -132,3 +139,28 @@ export const getAvailableRooms = async (req, res) => {
         res.status(500).send({ message: `Error fetching available rooms: ${error.message}` });
     }
 };
+
+//get che restituisca solo le camere che possono contenere il numero di pax specificato nella booking
+// export const getRoomsPerMaxPax = async (req, res) =>{
+//     const {adult, children } = req.query
+
+//     //calcola il numero totale di pax (somma di adults+children)
+//     const totalPax = parseInt(adults) + parseInt(children);
+
+//     try {
+//         // Trova tutte le camere che possono ospitare almeno 'totalPax' persone
+//         const rooms = await Room.find({
+//             maxPax: { $gte: totalPax }
+//         });
+
+//         // Se non ci sono camere trovate
+//         if (rooms.length === 0) {
+//             return res.status(404).send({ message: 'No rooms available for the requested number of pax' });
+//         }
+
+//         // Restituisci le camere disponibili
+//         res.status(200).json(rooms);
+//     } catch (error) {
+//         res.status(500).send({ message: `Error retrieving rooms: ${error.message}` });
+//     }
+// }

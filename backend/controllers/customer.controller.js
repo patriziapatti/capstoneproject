@@ -1,4 +1,5 @@
 import Customer from '../models/customerSchema.js'
+import Booking from '../models/bookingSchema.js'
 
 export const getAllCustomer = async (req,res)=>{
     const page = req.query.page || 1
@@ -62,16 +63,24 @@ export const editCustomer = async (req,res)=>{
     
 }
 
+
 export const deleteCustomer = async (req,res)=>{
-    const {id} =req.params
+    const {id} = req.params
     try {
-        //se l'id esiste nello schema allora fai la delete
-        if (await Customer.exists({_id:id})){
-            await Customer.findByIdAndDelete(id)
-            res.status(200).send(`ho eliminato il cliente con id: ${id}`)
-        }else {res.status(404).send({message: `ID ${id} not found`})}
-        
+        //verifico se il cliente esiste
+        const customerExists = await Customer.exists({_id: id})
+        if (!customerExists){
+            return res.status(404).send({message: `ID ${id} not found`})
+        }
+
+        //verifico se ci sono prenotazioni associate a questo customer
+        const bookings = await Booking.find({customer: id})
+        if (bookings.length > 0){
+            return res.status(400).send({ message: `Il cliente con ID ${id} ha prenotazioni attive e non può essere eliminato.`});
+        }
+        await Customer.findByIdAndDelete(id)
+        res.status(200).send(`ho eliminato il cliente con id: ${id}`)
     } catch (error) {
-        res.status(404).send({message: `ID ${id} not found`})
+        res.status(500).send({ message: `Errore del server durante l'eliminazione del cliente: ${error.message}` });
     }
 }

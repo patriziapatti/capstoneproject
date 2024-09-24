@@ -8,10 +8,11 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "roomNumber": "304",
+    "roomNumber": "305",
     "type": "Family",
     "price": "190",
-    "status": "available"
+    "status": "available",
+    "maxPax": "4"
 }
 
 ###
@@ -20,19 +21,20 @@ GET {{baseUrl}}/66ed955afd35acb318a122ca
 
 ###
 
-PUT {{baseUrl}}/66ed955afd35acb318a122ca
+PUT {{baseUrl}}/66ed959dfd35acb318a122d8
 Content-Type: application/json
 
 {
-    "roomNumber": "203",
-    "type": "Double",
+    "roomNumber": "304",
+    "type": "Family",
     "price": "190",
-    "status": "available"
+    "status": "available",
+    "maxPax": 4
 }
 
 ###
 
-DELETE {{baseUrl}}/66ed956dfd35acb318a122ce
+DELETE {{baseUrl}}/66f2f40e8e01de9b6f758a47
 
 ###
 

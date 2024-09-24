@@ -10,7 +10,7 @@ export const getAllBookings = async (req, res) => {
     try {
         const allBookings = await Booking.find({})
             .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-            .sort({ customer: 1 })
+            .sort({ checkInDate: 1 })
             .skip((page - 1) * perPage)//salto la pagina precedente
             .limit(perPage)
         const totalResults = await Booking.countDocuments()// mi da il numero totale di documenti
@@ -78,6 +78,11 @@ export const addBooking = async (req, res) => {
             return res.status(400).send({ message: 'Room is already booked for the selected dates' });
         }
 
+        const totalPax = pax.adults + pax.children
+        if(totalPax > roomData.maxPax){
+            return res.status(400).send({ message: 'Camera non disponibile per il numero di pax richiesto' });
+        }
+
         const pricePerNight = roomData.price;
         const numberOfNight = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24))
         const totalPrice = pricePerNight * numberOfNight
@@ -119,6 +124,8 @@ export const editBooking = async (req, res) => {
         if (!booking) {
             return res.status(404).send({ message: `Booking with ID ${id} not found` });
         }
+
+        //TODO: se booking.status è diverso da reserved NON POSSO MODIFICARE LE DATE ritorna errore eccecc PERCHè NON POSSO MODIFICARE UNA PRENOTAZIONE GIà CHECKINATA O CHECKOUTATA 
 
         const { checkInDate, checkOutDate, room } = req.body;
 
@@ -363,6 +370,24 @@ export const getTodaysInHouse = async (req, res) => {
         res.status(500).send({ message: `Error fetching bookings: ${error.message}` });
     }
 };
+
+export const getBookingsForPlanning = async (req, res) => {
+    try {
+        //ottengo la data di ieri
+        const today = new Date()
+        const yesterday = new Date(today)
+        yesterday.setDate(today.getDate()-1)
+        yesterday.setHours(0,0,0,0)//imposto l'orario a mezzanotte
+
+        //trovo le prenotazioni con data di check-in maggiore di ieri
+        const bookings = await Booking.find({
+            checkInDate : {$gt: yesterday}
+        })
+        res.status(200).send(bookings)
+    } catch (error) {
+        res.status(500).send({ message: `Errore durante il recupero delle prenotazioni: ${error.message}` })
+    }
+}
 
 
 

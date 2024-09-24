@@ -1,19 +1,19 @@
 @baseUrl=http://localhost:5000/api/bookings
 
 GET {{baseUrl}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxODU2NzUsImV4cCI6MTcyNzIxNDQ3NX0.np3FkK7etpNDBI0Exp7aBcpnFg74L7T4Hju22thcNKE
 
 ###
 
 POST {{baseUrl}}
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxOTUyMTYsImV4cCI6MTcyNzIyNDAxNn0.6EQx1jrNALyhMeUGobFkTLpXmlMwvxxQy0CzxJxc86g
 
 {
     "customer": "66f021ecc3d4043796ef0459",
-    "checkInDate": "2024-11-25",
-    "checkOutDate": "2024-10-20",
-    "room": "66ed957afd35acb318a122d0",
+    "checkInDate": "2024-12-27",
+    "checkOutDate": "2024-12-28",
+    "room": "66ed9514fd35acb318a122c0",
     "pax": {
         "adults": 2,
         "children": 0
@@ -29,20 +29,20 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjM
 
 ###
 
-PUT {{baseUrl}}/66f01b141c57b511708ef9fe
+PUT {{baseUrl}}/66f0228bc3d4043796ef045e
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxOTg5MjAsImV4cCI6MTcyNzIyNzcyMH0.H6Q2Zsca93gB5ksqGw51fGizxGG8-f7xDZyNayVoomU
 
 {
-    "customer": "66ed98d2a4652d0e175c1ccf",
-    "checkInDate": "2024-10-21",
-    "checkOutDate": "2024-10-23",
-    "room": "66ed951cfd35acb318a122c2",
+    "customer": "66f021ecc3d4043796ef0459",
+    "checkInDate": "2024-09-22",
+    "checkOutDate": "2024-09-26",
+    "room": "66ed9595fd35acb318a122d4",
     "pax": {
         "adults": 2,
-        "children": 2
+        "children": 1
     },
-    "status": "reserved"
+    "status": "checkedIn"
 }
 
 ###
@@ -64,3 +64,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjM
 
 GET {{baseUrl}}/inhouse
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
+
+###
+
+GET {{baseUrl}}/booking-planning
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxOTUyMTYsImV4cCI6MTcyNzIyNDAxNn0.6EQx1jrNALyhMeUGobFkTLpXmlMwvxxQy0CzxJxc86g

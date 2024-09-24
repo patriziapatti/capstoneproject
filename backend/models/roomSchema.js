@@ -21,6 +21,10 @@ const roomSchema = new Schema(
             enum: ['available', 'occupied'],
             default: 'available'
         },
+        maxPax:{
+            type: Number,
+            required: true
+        }
     },
     {collection: "rooms", timestamps: true}
 )
