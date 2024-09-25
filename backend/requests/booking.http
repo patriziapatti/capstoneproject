@@ -7,13 +7,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjM
 
 POST {{baseUrl}}
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxOTUyMTYsImV4cCI6MTcyNzIyNDAxNn0.6EQx1jrNALyhMeUGobFkTLpXmlMwvxxQy0CzxJxc86g
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcyODExOTIsImV4cCI6MTcyNzMwOTk5Mn0.vstHOcK0YR4dsf4TMJiSrLOmS_C5qTb6iIHfgUOr99M
 
 {
-    "customer": "66f021ecc3d4043796ef0459",
-    "checkInDate": "2024-12-27",
-    "checkOutDate": "2024-12-28",
-    "room": "66ed9514fd35acb318a122c0",
+    "customer": "66ed98d2a4652d0e175c1ccf",
+    "checkInDate": "2024-09-25",
+    "checkOutDate": "2024-09-27",
+    "room": "66ed955afd35acb318a122ca",
     "pax": {
         "adults": 2,
         "children": 0
@@ -31,18 +31,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjM
 
 PUT {{baseUrl}}/66f0228bc3d4043796ef045e
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxOTg5MjAsImV4cCI6MTcyNzIyNzcyMH0.H6Q2Zsca93gB5ksqGw51fGizxGG8-f7xDZyNayVoomU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcyODExOTIsImV4cCI6MTcyNzMwOTk5Mn0.vstHOcK0YR4dsf4TMJiSrLOmS_C5qTb6iIHfgUOr99M
 
 {
-    "customer": "66f021ecc3d4043796ef0459",
-    "checkInDate": "2024-09-22",
-    "checkOutDate": "2024-09-26",
-    "room": "66ed9595fd35acb318a122d4",
+    "customer": "66ed98d2a4652d0e175c1ccf",
+    "checkInDate": "2024-12-22",
+    "checkOutDate": "2024-12-26",
+    "room": "66ed955afd35acb318a122ca",
     "pax": {
         "adults": 2,
         "children": 1
     },
-    "status": "checkedIn"
+    "status": "checkedOut"
 }
 
 ###

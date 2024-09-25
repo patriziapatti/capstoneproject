@@ -49,21 +49,21 @@ export const addBooking = async (req, res) => {
         const checkIn = new Date(checkInDate)
         const checkOut = new Date(checkOutDate)
 
-         // Normalizza le date a mezzanotte per evitare problemi di calcolo con l'ora
-         checkIn.setHours(0, 0, 0, 0);
-         checkOut.setHours(0, 0, 0, 0);
+        // Normalizza le date a mezzanotte per evitare problemi di calcolo con l'ora
+        checkIn.setHours(0, 0, 0, 0);
+        checkOut.setHours(0, 0, 0, 0);
 
         // Ottieni la data odierna senza l'orario
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-          // Controllo che la data di check-in non sia nel passato
-          if (checkIn < today || checkOut < today) {
+        // Controllo che la data di check-in non sia nel passato
+        if (checkIn < today || checkOut < today) {
             return res.status(400).send({ message: 'Check-in and check-out dates cannot be in the past' });
         }
 
         // Controllo che la data di check-in sia precedente a quella di check-out
-        if (checkIn > checkOut ) {
+        if (checkIn > checkOut) {
             return res.status(400).send({ message: 'Check-out date must be after the check-in date' });
         }
 
@@ -79,7 +79,7 @@ export const addBooking = async (req, res) => {
         }
 
         const totalPax = pax.adults + pax.children
-        if(totalPax > roomData.maxPax){
+        if (totalPax > roomData.maxPax) {
             return res.status(400).send({ message: 'Camera non disponibile per il numero di pax richiesto' });
         }
 
@@ -124,8 +124,13 @@ export const editBooking = async (req, res) => {
         if (!booking) {
             return res.status(404).send({ message: `Booking with ID ${id} not found` });
         }
-
-        //TODO: se booking.status è diverso da reserved NON POSSO MODIFICARE LE DATE ritorna errore eccecc PERCHè NON POSSO MODIFICARE UNA PRENOTAZIONE GIà CHECKINATA O CHECKOUTATA 
+        
+        // Se lo stato della prenotazione è diverso da "reserved", non permettere la modifica delle date
+        if (booking.status !== 'reserved') {
+            return res.status(400).send({
+                message: 'Cannot modify check-in or check-out dates for a booking that is already checked-in or out'
+            });
+        }
 
         const { checkInDate, checkOutDate, room } = req.body;
 
@@ -232,28 +237,57 @@ export const deleteBooking = async (req, res) => {
         res.status(404).send({ message: `ID ${id} not found` })
     }
 }
-//ritorna 200 ma array vuoto
-// export const getTodaysArrivals = async (req, res) => {
-//     try {
-//         // Ottieni la data odierna senza l'orario
-//         const today = new Date();
-//         today.setHours(0, 0, 0, 0);
 
-//         // Trova le prenotazioni in arrivo, in corso e in partenza oggi
-//         const bookingsArrivingToday = await Booking.find({ checkInDate: today }).populate('customer').populate('room');
-//         // const bookingsInHouseToday = await Booking.find({ checkInDate: { $lt: today }, checkOutDate: { $gt: today } }).populate('customer').populate('room');
-//         // const bookingsDepartingToday = await Booking.find({ checkOutDate: today }).populate('customer').populate('room');
+export const updatedBookingStatus =  async (req, res) => {
+    const { id } = req.params; // ID della prenotazione
+    const { status } = req.body; // Nuovo status (checkedIn o checkedOut)
 
-//         // Rispondi con i risultati trovati
-//         res.status(200).json({
-//             arrivingToday: bookingsArrivingToday,
-//             // inHouseToday: bookingsInHouseToday,
-//             // departingToday: bookingsDepartingToday
-//         });
-//     } catch (error) {
-//         res.status(500).send({ message: `Error fetching bookings: ${error.message}` });
-//     }
-// };
+    try {
+        // Trova la prenotazione esistente
+        const booking = await Booking.findById(id);
+        if (!booking) {
+            return res.status(404).send({ message: `Booking with ID ${id} not found` });
+        }
+
+        // Verifica che lo status sia valido
+        const validStatuses = ['reserved', 'checkedIn', 'checkedOut'];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).send({ message: 'Invalid status. Valid statuses are: reserved, checkedIn, checkedOut.' });
+        }
+
+        // Se lo status è "checkedIn", verifica che la data attuale sia la data di check-in
+        if (status === 'checkedIn') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalizza la data attuale a mezzanotte
+            const checkInDate = new Date(booking.checkInDate);
+            checkInDate.setHours(0, 0, 0, 0); // Normalizza la data di check-in a mezzanotte
+
+            if (today < checkInDate) {
+                return res.status(400).send({ message: 'You can only check in on or after the check-in date.' });
+            }
+        }
+
+        // Se lo status è "checkedOut", verifica che la data attuale sia la data di check-out o successiva
+        if (status === 'checkedOut') {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Normalizza la data attuale a mezzanotte
+            const checkOutDate = new Date(booking.checkOutDate);
+            checkOutDate.setHours(0, 0, 0, 0); // Normalizza la data di check-out a mezzanotte
+
+            if (today < checkOutDate) {
+                return res.status(400).send({ message: 'You can only check out on or after the check-out date.' });
+            }
+        }
+
+        // Aggiorna solo lo status della prenotazione
+        booking.status = status;
+        await booking.save();
+
+        res.status(200).send({ message: `Booking status updated to ${status}` });
+    } catch (error) {
+        res.status(500).send({ message: `Error updating booking status: ${error.message}` });
+    }
+};
 
 export const getTodaysArrivals = async (req, res) => {
     const page = req.query.page || 1
@@ -272,10 +306,10 @@ export const getTodaysArrivals = async (req, res) => {
         const bookingsArrivingToday = await Booking.find({
             checkInDate: { $gte: startOfDay, $lte: endOfDay }
         }).populate('customer').populate('room')
-        .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-        .sort({ checkInDate: 1 })
-        .skip((page - 1) * perPage)//salto la pagina precedente
-        .limit(perPage)
+            .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
+            .sort({ checkInDate: 1 })
+            .skip((page - 1) * perPage)//salto la pagina precedente
+            .limit(perPage)
         const totalResults = await Booking.countDocuments({
             checkInDate: { $gte: startOfDay, $lte: endOfDay }
         })// mi da il numero totale delle prenotazioni in casa oggi
@@ -310,15 +344,15 @@ export const getTodaysDeparture = async (req, res) => {
         const bookingsDepartingToday = await Booking.find({
             checkOutDate: { $gte: startOfDay, $lte: endOfDay }
         }).populate('customer').populate('room')
-        .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-        .sort({ checkInDate: 1 })
-        .skip((page - 1) * perPage)//salto la pagina precedente
-        .limit(perPage)
+            .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
+            .sort({ checkInDate: 1 })
+            .skip((page - 1) * perPage)//salto la pagina precedente
+            .limit(perPage)
         const totalResults = await Booking.countDocuments({
             checkOutDate: { $gte: startOfDay, $lte: endOfDay }
         })// mi da il numero totale delle prenotazioni in casa oggi
         const totalPages = Math.ceil(totalResults / perPage)
-        
+
         // Rispondi con i risultati trovati
         res.status(200).json({
             departingToday: bookingsDepartingToday,
@@ -347,15 +381,15 @@ export const getTodaysInHouse = async (req, res) => {
         // Trova le prenotazioni in casa oggi
         const bookingsInHouseToday = await Booking.find({
             checkInDate: { $lte: endOfDay }, // check-in deve essere avvenuto prima della fine di oggi
-            checkOutDate: { $gte: startOfDay}// check-out deve essere dopo l'inizio di oggi
+            checkOutDate: { $gte: startOfDay }// check-out deve essere dopo l'inizio di oggi
         }).populate('customer').populate('room')
-        .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-        .sort({ checkInDate: 1 })
-        .skip((page - 1) * perPage)//salto la pagina precedente
-        .limit(perPage)
+            .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
+            .sort({ checkInDate: 1 })
+            .skip((page - 1) * perPage)//salto la pagina precedente
+            .limit(perPage)
         const totalResults = await Booking.countDocuments({
             checkInDate: { $lte: endOfDay },
-            checkOutDate: { $gte: startOfDay}
+            checkOutDate: { $gte: startOfDay }
         })// mi da il numero totale delle prenotazioni in casa oggi
         const totalPages = Math.ceil(totalResults / perPage)
 
@@ -376,12 +410,12 @@ export const getBookingsForPlanning = async (req, res) => {
         //ottengo la data di ieri
         const today = new Date()
         const yesterday = new Date(today)
-        yesterday.setDate(today.getDate()-1)
-        yesterday.setHours(0,0,0,0)//imposto l'orario a mezzanotte
+        yesterday.setDate(today.getDate() - 1)
+        yesterday.setHours(0, 0, 0, 0)//imposto l'orario a mezzanotte
 
         //trovo le prenotazioni con data di check-in maggiore di ieri
         const bookings = await Booking.find({
-            checkInDate : {$gt: yesterday}
+            checkInDate: { $gt: yesterday }
         })
         res.status(200).send(bookings)
     } catch (error) {
