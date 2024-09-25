@@ -1,7 +1,7 @@
 @baseUrl=http://localhost:5000/api/bookings
 
 GET {{baseUrl}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxODU2NzUsImV4cCI6MTcyNzIxNDQ3NX0.np3FkK7etpNDBI0Exp7aBcpnFg74L7T4Hju22thcNKE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY0NGFkZWY3YmRlM2Q3OTQzOTdiYWEiLCJpYXQiOjE3MjcyODU5OTgsImV4cCI6MTcyNzMxNDc5OH0.5cjBYoYDTJOBuMWa8qNNzKJr5pxa0upvv5EN8zhxSzk
 
 ###
 

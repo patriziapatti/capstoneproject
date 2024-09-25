@@ -4,9 +4,11 @@ POST {{baseUrl}}
 Content-Type: application/json
 
 {
-    "username": "Marti",
-    "email": "martina@patti.com",
-    "password": "87654321"
+    "name": "Fabrizio",
+    "surname": "Patti",
+    "username": "fabripatti",
+    "email": "fabrizio@patti.com",
+    "password": "12345678"
 }
 
 ###
