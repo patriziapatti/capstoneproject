@@ -7,15 +7,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY0N
 
 POST {{baseUrl}}
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcyODExOTIsImV4cCI6MTcyNzMwOTk5Mn0.vstHOcK0YR4dsf4TMJiSrLOmS_C5qTb6iIHfgUOr99M
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc0NDk2MjksImV4cCI6MTcyNzQ3ODQyOX0.pSY1xQWYuzwfvwAlcd3nNVlxlX7FqUQtajQdPdTBOuQ
 
 {
-    "customer": "66ed98d2a4652d0e175c1ccf",
-    "checkInDate": "2024-09-25",
-    "checkOutDate": "2024-09-27",
-    "room": "66ed955afd35acb318a122ca",
+    "customer": "66f02224c3d4043796ef045b",
+    "checkInDate": "2024-09-27",
+    "checkOutDate": "2024-10-28",
+    "room": "66ed94e4fd35acb318a122ba",
     "pax": {
-        "adults": 2,
+        "adults": 1,
         "children": 0
     },
     "status": "reserved",
@@ -53,7 +53,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjM
 ###
 
 GET {{baseUrl}}/todayarr
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc0NDk2MjksImV4cCI6MTcyNzQ3ODQyOX0.pSY1xQWYuzwfvwAlcd3nNVlxlX7FqUQtajQdPdTBOuQ
 
 ###
 
@@ -63,7 +63,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjM
 ###
 
 GET {{baseUrl}}/inhouse
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjMjM4ODIzNDk3MGZjNTk2MzAxZDAiLCJpYXQiOjE3MjcxMzAxOTUsImV4cCI6MTcyNzE1ODk5NX0.S2FVzmdyQe3EkPGfzCbyVewU4n52gt4YeysaZH-CXKI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc0NDk2MjksImV4cCI6MTcyNzQ3ODQyOX0.pSY1xQWYuzwfvwAlcd3nNVlxlX7FqUQtajQdPdTBOuQ
 
 ###
 

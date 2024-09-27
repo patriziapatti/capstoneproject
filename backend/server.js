@@ -26,10 +26,10 @@ server.use(cors()) // è un middleware che consente la connessione tra backend e
 server.use(morgan("dev"))// è un middleware che mi mostra tutti i log delle richieste
 server.use(helmet ())//middleware che ci da la sicurezza per il backend
 server.use('/api/auth', authenticationRouter)
-server.use('/api/users', userRouter)
+server.use('/api/users',authorization, userRouter)
 server.use('/api/bookings',authorization, bookingRouter)
-server.use('/api/rooms', roomRouter)
-server.use('/api/customers', customerRouter)
+server.use('/api/rooms',authorization, roomRouter)
+server.use('/api/customers',authorization, customerRouter)
 // server.use('api/bookings')
 // server.use('api/customers')
 // server.use('api/rooms')
