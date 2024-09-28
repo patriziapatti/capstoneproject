@@ -18,7 +18,7 @@ const InHouseSummary = () => {
         setInHouseRooms(inHouse.length); // Numero camere in arrivo
 
         // Calcola il totale degli ospiti
-        const guests = inHouse.reduce((total, dep) => total + dep.guests.length, 0);
+        const guests = inHouse.reduce((total, inh) => total + (inh.pax.adults + inh.pax.children), 0);
         setTotalGuests(guests);
       } catch (error) {
         console.error("Errore nel recupero dei dati:", error);

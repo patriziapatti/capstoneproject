@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { Row, Col } from "react-bootstrap";
 import { login } from '../data/fetch';
 import { Link, useSearchParams } from "react-router-dom";
 import { UserContext } from "../context/UserContextProvider";
@@ -118,7 +119,17 @@ const Home = props => {
               </Button>
             </Modal.Footer>
         </Modal>
-        {token && <div className="d-flex justify-content-between "><ArrivalSummary /> <DepartureSummary/> <InHouseSummary/></div>}
+        {token && (    <Row className="my-4 justify-content-center">
+          <Col xs={12} md={4} className="mb-4 d-flex justify-content-center">
+            <ArrivalSummary className="mx-auto" />
+          </Col>
+          <Col xs={12} md={4} className="mb-4 d-flex justify-content-center">
+            <DepartureSummary className="mx-auto" />
+          </Col>
+          <Col xs={12} md={4} className="mb-4 d-flex justify-content-center">
+            <InHouseSummary className="mx-auto" />
+          </Col>
+        </Row>) }
         {token && <Todays />}
         {token && <TodaysDep />}
         {token && <TodaysHouse />} 

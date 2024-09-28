@@ -18,7 +18,7 @@ const DepartureSummary = () => {
         setDepartingRooms(departing.length); // Numero camere in arrivo
 
         // Calcola il totale degli ospiti
-        const guests = departing.reduce((total, dep) => total + dep.guests.length, 0);
+        const guests = departing.reduce((total, dep) => total + (dep.pax.adults + dep.pax.children), 0);
         setTotalGuests(guests);
       } catch (error) {
         console.error("Errore nel recupero dei dati:", error);

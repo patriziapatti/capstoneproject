@@ -18,7 +18,7 @@ const ArrivalSummary = () => {
         setArrivingRooms(arrivals.length); // Numero camere in arrivo
 
         // Calcola il totale degli ospiti
-        const guests = arrivals.reduce((total, arrival) => total + arrival.guests.length, 0);
+        const guests = arrivals.reduce((total, arrival) => total + (arrival.pax.adults + arrival.pax.children), 0);
         setTotalGuests(guests);
       } catch (error) {
         console.error("Errore nel recupero dei dati:", error);
@@ -41,28 +41,6 @@ const ArrivalSummary = () => {
         </Card.Text>
       </Card.Body>
     </Card>
-    {/* <Card className="text-center my-4">
-      <Card.Body>
-        <Card.Title>Partenze</Card.Title>
-        <Card.Text>
-          <strong>Camere in arrivo:</strong> {arrivingRooms} su {totalRooms}
-        </Card.Text>
-        <Card.Text>
-          <strong>Totale ospiti:</strong> {totalGuests}
-        </Card.Text>
-      </Card.Body>
-    </Card>
-    <Card className="text-center my-4">
-      <Card.Body>
-        <Card.Title>In House</Card.Title>
-        <Card.Text>
-          <strong>Camere in arrivo:</strong> {arrivingRooms} su {totalRooms}
-        </Card.Text>
-        <Card.Text>
-          <strong>Totale ospiti:</strong> {totalGuests}
-        </Card.Text>
-      </Card.Body>
-    </Card> */}
     </div>
   );
 };

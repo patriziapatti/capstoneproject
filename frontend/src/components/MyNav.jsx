@@ -10,7 +10,7 @@ function MyNav() {
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
       <Image src={MyImage} width="70" height="50"/>
-        <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand>
+        {/* <Navbar.Brand href="#home">React-Bootstrap</Navbar.Brand> */}
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
