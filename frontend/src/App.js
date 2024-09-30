@@ -6,6 +6,7 @@ import UserContextProvider from './context/UserContextProvider';
 import New from './components/New';
 import Profile from './components/Profile';
 import BookingList from './components/BookingList';
+import SingleBooking from './components/SingleBooking';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/new" element={<New />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/bookings" element={<BookingList />} />
+        <Route path="/booking/:id" element={<SingleBooking />} />
         {/* <Route path="/blog/:id" element={<Blog />} />
         <Route path="/new" element={<NewBlogPost />} />
         <Route path="/404" element={<NotFound />} />

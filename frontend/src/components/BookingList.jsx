@@ -46,6 +46,11 @@ function BookingList() {
     }
   };
 
+  // Funzione per navigare alla pagina dei dettagli della prenotazione
+  const handleViewDetails = (bookingId) => {
+    navigate(`/booking/${bookingId}`); // Reindirizza alla pagina con i dettagli della prenotazione
+  };
+
 
   return (<>
     {token && <Container className="mt-5">
@@ -102,7 +107,9 @@ function BookingList() {
             ) : (
               bookings.map((booking) => (
                 <tr key={booking._id}>
-                  <td>{booking._id}</td>
+                  <td><Button variant="link" onClick={() => handleViewDetails(booking._id)}>
+                          {booking._id}
+                        </Button></td>
                   <td>{booking.customer.name} {booking.customer.surname}</td>
                   <td>{new Date(booking.checkInDate).toLocaleDateString()}</td>
                   <td>{new Date(booking.checkOutDate).toLocaleDateString()}</td>

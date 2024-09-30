@@ -85,9 +85,15 @@ export const getAllRooms = async () => {
   //FETCH PER OTTENERE ROOMS DISPONIBILI
   export const getAvailableRooms = async ({ checkInDate, checkOutDate, adults, children }) => {
     try {
-        const urlBase = 'http://localhost:5000/api/rooms/available';
-        const url = `${urlBase}?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&children=${children}`;
+        const urlBase = 'http://localhost:5000/api/rooms/availableRoom/?';
+        // const url = `${urlBase}?checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&children=${children}`;
 
+        const url = urlBase + new URLSearchParams({
+          checkInDate,
+          checkOutDate,
+          adults,
+          children,
+        });
         const res = await fetch(url, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -282,5 +288,49 @@ export const deleteBookingById = async (bookingId) => {
     }
   };
 
+//FETCH PER RECUPERARE LA SINGOLA BOOKING
+export const getSingleBooking = async (bookingId) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Se l'endpoint richiede autenticazione
+      },
+    });
 
-  
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Errore durante il recupero della prenotazione.');
+    }
+
+    const booking = await response.json();
+    return booking;
+  } catch (error) {
+    console.error('Errore durante il recupero della prenotazione:', error.message);
+    throw error;
+  }
+};
+
+//FETCH PER RECUPERARE TUTTI I GUESTS
+
+export const getAllGuests = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/customers', {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Se l'endpoint richiede autenticazione
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Errore durante il recupero degli ospiti');
+    }
+
+    const bookings = await response.json();
+    return bookings;
+  } catch (error) {
+    console.error('Errore durante il recupero degli ospiti:', error.message);
+    return [];
+  }
+};

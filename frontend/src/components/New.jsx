@@ -1,74 +1,8 @@
-// import { useContext, useEffect, useState } from "react"
-// import { UserContext } from "../context/UserContextProvider"
-// import { Container, Form, Alert } from "react-bootstrap"
-// import { getAllCustomer } from "../data/fetch"
-
-
-// const New = () => {
-//     const {token,setToken} = useContext(UserContext)
-//     const [customers, setCustomers] = useState([])
-//     const [search, setSearch] = useState("")
-//     const [error, setError] = useState(null);  // Stato per gestire errori
-
-//     const handleSearch = (event) => {
-//         setSearch(event.target.value ? event.target.value: "")
-//     }
-//     useEffect(()=>{
-//       const fetchData = async () => {
-//         if (!search) {
-//           // Se la barra di ricerca è vuota, non fare nulla
-//           setCustomers([]);
-//           return;
-//       }
-//         try {
-//           const data = await getAllCustomer(search)
-//           setCustomers(data.dati)
-//           setError(null);  // Reset dell'errore se la fetch è riuscita
-//         } catch (err) {
-//           console.error("Errore durante il fetch dei customer:", err);
-//                 setError("Errore nel caricamento dei customer.");
-
-//         }
-//       }
-//       fetchData();
-//     }, [search]);  // Esegui ogni volta che `search` cambia
-    
-//     return(
-//          <Container>
-//              <h2>Nuova Prenotazione</h2>
-//            <Form className="d-flex">
-//             <Form.Control
-//               type="search"
-//               placeholder="Search customer"
-//               className="me-2 mb-2 w-25"
-//               aria-label="Search"
-//               name="search"
-//             onChange={handleSearch}
-//             />
-//           </Form> 
-//           {/* Mostra un messaggio di errore se c'è un problema */}
-//           {error && <Alert variant="danger">{error}</Alert>}
-            
-//             {/* Mostra la lista dei customer o un messaggio se non ce ne sono */}
-//             {customers.length > 0 ? (
-//                 <ul>
-//                     {customers.map((customer) => (
-//                         <li className="list-group-item" key={customer._id}>{customer.name} {customer.surname}</li> 
-//                     ))}
-//                 </ul>
-//             ) : (
-//                 !error && <p>Nessun customer trovato.</p>
-//             )}
-//          </Container>
-//     )
-// }
-// export default New
-
-
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContextProvider";
 import { Container, Form, Alert, Dropdown, Button } from "react-bootstrap";
 import { getAllCustomer, addNewCustomer, addNewBooking, getAvailableRooms } from "../data/fetch";
+import { Navigate } from "react-router-dom";
 
 const New = () => {
     const { token, setToken } = useContext(UserContext);
@@ -131,24 +65,33 @@ const New = () => {
         fetchData();
     }, [search]);
 
-    // Effettua la fetch delle stanze disponibili in base a date e pax
-    useEffect(() => {
-        const fetchAvailableRooms = async () => {
-            const { checkInDate, checkOutDate, adults, children } = formData;
+    const fetchAvailableRooms = async () => {
+        const { checkInDate, checkOutDate, adults, children } = formData;
 
-            if (checkInDate && checkOutDate && adults > 0) {
-                try {
-                    const data = await getAvailableRooms({ checkInDate, checkOutDate, adults, children });
-                    setRooms(data.dati);
-                    setError(null);
-                } catch (err) {
-                    console.error("Errore durante la fetch delle stanze disponibili:", err);
+        if (checkInDate && checkOutDate && adults > 0) {
+            try {
+                const data = await getAvailableRooms({ checkInDate, checkOutDate, adults, children });
+                setRooms(data.dati);
+                setError(null);
+            } catch (err) {
+                console.error("Errore durante la fetch delle stanze disponibili:", err);
+                console.log(err);
+                if (err.status !== 400) {
                     setError("Errore nel caricamento delle stanze disponibili.");
                 }
+                
             }
-        };
+        }
+    };
+    const handleVerifyRoomClick = () => {
         fetchAvailableRooms();
-    }, [formData.checkInDate, formData.checkOutDate, formData.adults, formData.children]);
+    }
+
+    // Effettua la fetch delle stanze disponibili in base a date e pax
+    // useEffect(() => {
+        
+    //     fetchAvailableRooms();
+    // }, [formData.checkInDate, formData.checkOutDate, formData.adults, formData.children]);
 
     // Gestisce la selezione di un customer
     const handleSelectCustomer = (customer) => {
@@ -171,6 +114,9 @@ const New = () => {
         const customerData = {
             name: form.name.value,
             surname: form.surname.value,
+            dateOfBirth: form.dateOfBirth.value,
+            email: form.email.value,
+            phone: form.phone.value,
         };
 
         try {
@@ -190,14 +136,13 @@ const New = () => {
         const bookingData = {
             customer: selectedCustomer._id,
             room: form.room.value,
-            checkInDate: form.checkInDate.value,
+            checkInDate: form.checkInDate.value, 
             checkOutDate: form.checkOutDate.value,
             pax: {
                 adults: parseInt(form.adults.value),
                 children: parseInt(form.children.value),
             },
-            status: form.status.value,
-            totalPrice: parseFloat(form.totalPrice.value),
+            // totalPrice: parseFloat(form.totalPrice.value),
         };
 
         try {
@@ -230,6 +175,9 @@ const New = () => {
                     <Form.Label>Numero di Bambini</Form.Label>
                     <Form.Control type="number" name="children" min="0" value={formData.children} onChange={handleInputChange} required />
                 </Form.Group>
+                <Button variant="primary" type="button" onClick={handleVerifyRoomClick}>
+                    Verifica Date
+                </Button>
                 <Form.Group controlId="formBookingRoom">
                     <Form.Label>Stanza Disponibile</Form.Label>
                     <Form.Control as="select" name="room" required>
@@ -239,20 +187,21 @@ const New = () => {
                         ))}
                     </Form.Control>
                 </Form.Group>
-                <Form.Group controlId="formBookingTotalPrice">
+                {/* <Form.Group controlId="formBookingTotalPrice">
                     <Form.Label>Prezzo Totale (€)</Form.Label>
                     <Form.Control type="number" name="totalPrice" min="0" step="0.01" required />
-                </Form.Group>
+                </Form.Group> */}
                 <Button variant="primary" type="submit">
                     Conferma Prenotazione
                 </Button>
             </Form>
+            
         );
     };
 
     // Form per aggiungere un nuovo customer
     const renderNewCustomerForm = () => {
-        return (
+        return ( 
             <Form onSubmit={handleSubmitNewCustomer}>
                 <h3>Aggiungi Nuovo Cliente</h3>
                 <Form.Group controlId="formCustomerName">
@@ -263,6 +212,18 @@ const New = () => {
                     <Form.Label>Cognome</Form.Label>
                     <Form.Control type="text" name="surname" placeholder="Inserisci il cognome" required />
                 </Form.Group>
+                <Form.Group controlId="formCustomerEmail">
+                    <Form.Label>E-mail</Form.Label>
+                    <Form.Control type="text" name="email" placeholder="Inserisci l'email" required />
+                </Form.Group>
+                <Form.Group controlId="formCustomerName">
+                    <Form.Label>Data di nascita</Form.Label>
+                    <Form.Control type="date" name="dateOfBirth" placeholder="Inserisci la data di nascita" required />
+                </Form.Group>
+                <Form.Group controlId="formCustomerName">
+                    <Form.Label>Telfono</Form.Label>
+                    <Form.Control type="number" name="phone" placeholder="Inserisci il numero di telefono" required />
+                </Form.Group>
                 <Button variant="primary" type="submit">
                     Aggiungi Cliente
                 </Button>
@@ -270,8 +231,8 @@ const New = () => {
         );
     };
 
-    return (
-        <Container>
+    return ( <>
+        {token && <Container>
             <h2>Nuova Prenotazione</h2>
             <Form className="d-flex position-relative">
                 <Form.Control
@@ -314,242 +275,10 @@ const New = () => {
 
             {/* Se nessun customer è stato selezionato e vogliamo aggiungere un nuovo customer, mostra il form */}
             {newCustomer && renderNewCustomerForm()}
-        </Container>
+        </Container>}
+        </>
     );
 };
 
 export default New;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useEffect } from 'react';
-// import { Form, Button, Col, Row, Container } from 'react-bootstrap';
-// import { searchCustomer, addCustomer, addBooking, getAvailableRooms } from '../data/fetch';  // Importa le fetch
-
-// const New = () => {
-//     const [searchQuery, setSearchQuery] = useState('');
-//     const [isCustomerNew, setIsCustomerNew] = useState(false);
-//     const [customer, setCustomer] = useState(null);
-//     const [newCustomer, setNewCustomer] = useState({
-//         name: '',
-//         surname: '',
-//         email: '',
-//         phone: '',
-//         dateOfBirth: '',
-//     });
-//     const [bookingData, setBookingData] = useState({
-//         checkInDate: '',
-//         checkOutDate: '',
-//         pax: { adults: 0, children: 0 },
-//         room: '',
-//     });
-//     const [rooms, setRooms] = useState([]);
-
-//     useEffect(() => {
-//         const fetchRooms = async () => {
-//             const availableRooms = await getAvailableRooms();
-//             setRooms(availableRooms);
-//         };
-//         fetchRooms();
-//     }, []);
-
-//     const handleSearchCustomer = async () => {
-//         const result = await searchCustomer(searchQuery); // Chiamata alla fetch con il testo di ricerca
-    
-//         if (result.error) {
-//             console.log("Errore nella ricerca del cliente:", result.error);
-//             setIsCustomerNew(true);  // Se non troviamo il cliente, impostiamo per crearne uno nuovo
-//         } else {
-//             setCustomer(result[0]); // Usa il primo cliente trovato
-//             setIsCustomerNew(false);
-//         }
-//     };
-
-//     const handleCreateCustomer = async () => {
-//         const result = await addCustomer(newCustomer);
-//         if (!result.error) {
-//             setCustomer(result);
-//             setIsCustomerNew(false);
-//         }
-//     };
-
-//     const handleCreateBooking = async () => {
-//         const result = await addBooking({
-//             ...bookingData,
-//             customer: customer._id
-//         });
-//         if (!result.error) {
-//             alert('Prenotazione creata con successo');
-//         }
-//     };
-
-//     return (
-//         <Container>
-//             <h2>Nuova Prenotazione</h2>
-
-//             <Form>
-//                 {/* Barra di ricerca per il cliente */}
-//                 <Form.Group as={Row}>
-//                     <Form.Label column sm="2">Cerca cliente:</Form.Label>
-//                     <Col sm="8">
-//                         <Form.Control
-//                             type="text"
-//                             value={searchQuery}
-//                             onChange={(e) => setSearchQuery(e.target.value)}
-//                             placeholder="Inserisci email o nome cliente"
-//                         />
-//                     </Col>
-//                     <Col sm="2">
-//                         <Button onClick={handleSearchCustomer}>Cerca</Button>
-//                     </Col>
-//                 </Form.Group>
-
-//                 {/* Form per nuovo cliente */}
-//                 {isCustomerNew && (
-//                     <div>
-//                         <h3>Nuovo Cliente</h3>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Nome:</Form.Label>
-//                             <Col sm="10">
-//                                 <Form.Control
-//                                     type="text"
-//                                     value={newCustomer.name}
-//                                     onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
-//                                     placeholder="Nome"
-//                                 />
-//                             </Col>
-//                         </Form.Group>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Cognome:</Form.Label>
-//                             <Col sm="10">
-//                                 <Form.Control
-//                                     type="text"
-//                                     value={newCustomer.surname}
-//                                     onChange={(e) => setNewCustomer({ ...newCustomer, surname: e.target.value })}
-//                                     placeholder="Cognome"
-//                                 />
-//                             </Col>
-//                         </Form.Group>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Email:</Form.Label>
-//                             <Col sm="10">
-//                                 <Form.Control
-//                                     type="email"
-//                                     value={newCustomer.email}
-//                                     onChange={(e) => setNewCustomer({ ...newCustomer, email: e.target.value })}
-//                                     placeholder="Email"
-//                                 />
-//                             </Col>
-//                         </Form.Group>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Telefono:</Form.Label>
-//                             <Col sm="10">
-//                                 <Form.Control
-//                                     type="tel"
-//                                     value={newCustomer.phone}
-//                                     onChange={(e) => setNewCustomer({ ...newCustomer, phone: e.target.value })}
-//                                     placeholder="Telefono"
-//                                 />
-//                             </Col>
-//                         </Form.Group>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Data di Nascita:</Form.Label>
-//                             <Col sm="10">
-//                                 <Form.Control
-//                                     type="date"
-//                                     value={newCustomer.dateOfBirth}
-//                                     onChange={(e) => setNewCustomer({ ...newCustomer, dateOfBirth: e.target.value })}
-//                                 />
-//                             </Col>
-//                         </Form.Group>
-//                         <Button onClick={handleCreateCustomer}>Crea Cliente</Button>
-//                     </div>
-//                 )}
-
-//                 {/* Dettagli prenotazione */}
-//                 {customer && (
-//                     <div>
-//                         <h3>Dettagli Prenotazione</h3>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Check-in:</Form.Label>
-//                             <Col sm="4">
-//                                 <Form.Control
-//                                     type="date"
-//                                     value={bookingData.checkInDate}
-//                                     onChange={(e) => setBookingData({ ...bookingData, checkInDate: e.target.value })}
-//                                 />
-//                             </Col>
-//                             <Form.Label column sm="2">Check-out:</Form.Label>
-//                             <Col sm="4">
-//                                 <Form.Control
-//                                     type="date"
-//                                     value={bookingData.checkOutDate}
-//                                     onChange={(e) => setBookingData({ ...bookingData, checkOutDate: e.target.value })}
-//                                 />
-//                             </Col>
-//                         </Form.Group>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Adulti:</Form.Label>
-//                             <Col sm="4">
-//                                 <Form.Control
-//                                     type="number"
-//                                     value={bookingData.pax.adults}
-//                                     onChange={(e) => setBookingData({ ...bookingData, pax: { ...bookingData.pax, adults: e.target.value } })}
-//                                 />
-//                             </Col>
-//                             <Form.Label column sm="2">Bambini:</Form.Label>
-//                             <Col sm="4">
-//                                 <Form.Control
-//                                     type="number"
-//                                     value={bookingData.pax.children}
-//                                     onChange={(e) => setBookingData({ ...bookingData, pax: { ...bookingData.pax, children: e.target.value } })}
-//                                 />
-//                             </Col>
-//                         </Form.Group>
-//                         <Form.Group as={Row}>
-//                             <Form.Label column sm="2">Stanza:</Form.Label>
-//                             <Col sm="10">
-//                                 <Form.Control
-//                                     as="select"
-//                                     value={bookingData.room}
-//                                     onChange={(e) => setBookingData({ ...bookingData, room: e.target.value })}
-//                                 >
-//                                     <option value="">Seleziona una stanza</option>
-//                                     {rooms.map((room) => (
-//                                         <option key={room._id} value={room._id}>
-//                                             {room.roomNumber} - {room.type} (€{room.price})
-//                                         </option>
-//                                     ))}
-//                                 </Form.Control>
-//                             </Col>
-//                         </Form.Group>
-//                         <Button onClick={handleCreateBooking}>Crea Prenotazione</Button>
-//                     </div>
-//                 )}
-//             </Form>
-//             </Container>
-//     );
-// };
-
-// export default New;
