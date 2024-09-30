@@ -39,3 +39,4 @@ DELETE {{baseUrl}}/66f2f40e8e01de9b6f758a47
 ###
 
 GET {{baseUrl}}/availableRoom
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc2NDUyNzAsImV4cCI6MTcyNzY3NDA3MH0.Ap2kQV4xWl16pYRdDYBwemvGYWgFbROZPpnloyatmug

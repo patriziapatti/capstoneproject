@@ -7,16 +7,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY0N
 
 POST {{baseUrl}}
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc1MTI5NTEsImV4cCI6MTcyNzU0MTc1MX0.l7pHHRvQLrIeM9HRRHWs7FINXBgqxjBvZm0nhVoEGkU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc2ODkwMTgsImV4cCI6MTcyNzcxNzgxOH0.ZYHPo-Z_EmrrbVLQ2-f1P3kHeLPLQy8sZUIPuuKgXGE
 
 {
-    "customer": "66ee82f15bf4f4786564f97d",
-    "checkInDate": "2024-09-28",
-    "checkOutDate": "2024-09-29",
-    "room": "66ed951cfd35acb318a122c2",
+    "customer": "66f02224c3d4043796ef045b",
+    "checkInDate": "2024-11-30",
+    "checkOutDate": "2024-12-04",
+    "room": "66ed9598fd35acb318a122d6",
     "pax": {
         "adults": 2,
-        "children": 0
+        "children": 1
     },
     "status": "reserved",
     "totalPrice": ""
@@ -63,8 +63,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmVjM
 ###
 
 GET {{baseUrl}}/inhouse
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc0NDk2MjksImV4cCI6MTcyNzQ3ODQyOX0.pSY1xQWYuzwfvwAlcd3nNVlxlX7FqUQtajQdPdTBOuQ
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc2ODkwMTgsImV4cCI6MTcyNzcxNzgxOH0.ZYHPo-Z_EmrrbVLQ2-f1P3kHeLPLQy8sZUIPuuKgXGE
 ###
 
 GET {{baseUrl}}/booking-planning

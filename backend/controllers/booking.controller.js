@@ -416,7 +416,7 @@ export const getBookingsForPlanning = async (req, res) => {
         //trovo le prenotazioni con data di check-in maggiore di ieri
         const bookings = await Booking.find({
             checkInDate: { $gt: yesterday }
-        })
+        }).populate('customer').populate('room')
         res.status(200).send(bookings)
     } catch (error) {
         res.status(500).send({ message: `Errore durante il recupero delle prenotazioni: ${error.message}` })

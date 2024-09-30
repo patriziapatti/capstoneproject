@@ -79,7 +79,39 @@ export const login = async (req, res) => {
     }
 };
 
+export const changePassword = async (req, res) =>{
+    try {
+        // 1. Recupera l'utente loggato dal middleware di autenticazione
+    const user = req.loggedUser;
 
+    // 2. Recupera la password corrente e la nuova password dal body della richiesta
+    const { currentPassword, newPassword } = req.body;
+
+    // 3. Verifica che la password corrente e la nuova password siano fornite
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Password corrente e nuova password sono richieste.' });
+    }
+
+    // 4. Verifica se la password corrente fornita corrisponde a quella salvata
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'La password corrente non è corretta.' });
+    }
+    // 5. Genera un hash della nuova password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // 6. Aggiorna la password dell'utente nel database
+    user.password = hashedPassword;
+    await user.save();
+
+    // 7. Rispondi con un messaggio di successo
+    res.status(200).json({ message: 'Password aggiornata con successo.' });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Errore durante l\'aggiornamento della password.', error: error.message });
+    }
+}
 
 export const me = async(req,res) =>{
     return res.send(req.loggedUser)

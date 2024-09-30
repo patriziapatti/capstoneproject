@@ -3,6 +3,9 @@ import Home from './components/Home';
 import MyNav from './components/MyNav';
 import {BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import UserContextProvider from './context/UserContextProvider';
+import New from './components/New';
+import Profile from './components/Profile';
+import BookingList from './components/BookingList';
 
 function App() {
   return (
@@ -11,6 +14,9 @@ function App() {
       <MyNav />
       <Routes>
         <Route path="/" exact element={<Home />} />
+        <Route path="/new" element={<New />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/bookings" element={<BookingList />} />
         {/* <Route path="/blog/:id" element={<Blog />} />
         <Route path="/new" element={<NewBlogPost />} />
         <Route path="/404" element={<NotFound />} />

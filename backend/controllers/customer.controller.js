@@ -1,30 +1,38 @@
 import Customer from '../models/customerSchema.js'
 import Booking from '../models/bookingSchema.js'
 
-export const getAllCustomer = async (req,res)=>{
-    const page = req.query.page || 1
-    let perPage = req.query.perPage || 5
-    perPage = perPage > 10 ? 5 : perPage
+export const getAllCustomer = async (req, res) => {
+    const page = req.query.page || 1;
+    let perPage = req.query.perPage || 5;
+    perPage = perPage > 10 ? 5 : perPage;
+
+    const name = req.query.name; // Prendi il parametro 'name' dalla query string
+
+    // Crea una query dinamica basata sul valore di 'name'
+    const query = name
+        ? { $or: [{ name: { $regex: name, $options: 'i' } }, { surname: { $regex: name, $options: 'i' } }] }
+        : {}; // Se 'name' è definito, cerca sia in 'name' che in 'surname', ignorando maiuscole/minuscole
+
     try {
-        const allCustomer = await Customer.find({})
-        .collation({locale: 'it'}) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-        .sort({surname:1}) 
-        .skip((page-1)*perPage)//salto la pagina precedente
-        .limit(perPage)
-        const totalResults = await Customer.countDocuments()// mi da il numero totale di documenti
-        const totalPages = Math.ceil(totalResults / perPage )  
-        // res.send(allAuthors)
+        const allCustomer = await Customer.find(query)
+            .collation({ locale: 'it' }) // Ignora maiuscole/minuscole nell'ordine alfabetico del sort
+            .sort({ surname: 1 })
+            .skip((page - 1) * perPage) // Salta la pagina precedente
+            .limit(perPage);
+
+        const totalResults = await Customer.countDocuments(query); // Conta solo i risultati filtrati
+        const totalPages = Math.ceil(totalResults / perPage);
+
         res.send({
             dati: allCustomer,
             totalResults,
             totalPages,
             page,
-
-        })
+        });
     } catch (error) {
-        res.status(404).send({message: 'Not Found'})
-    }  
-}
+        res.status(404).send({ message: 'Not Found' });
+    }
+};
 
 export const getSingleCustomer = async (req,res)=>{
     const {id} =req.params
@@ -84,3 +92,26 @@ export const deleteCustomer = async (req,res)=>{
         res.status(500).send({ message: `Errore del server durante l'eliminazione del cliente: ${error.message}` });
     }
 }
+
+// Endpoint per cercare clienti per nome, cognome o email
+export const searchCustomer = async (req, res) => {
+    const { query } = req.query; // recupera il parametro "query" dalla URL
+
+    try {
+        const customers = await Customer.find({
+            $or: [
+                { name: { $regex: query, $options: 'i' } },     // Ricerca per nome
+                { surname: { $regex: query, $options: 'i' } },  // Ricerca per cognome
+                { email: { $regex: query, $options: 'i' } }     // Ricerca per email
+            ]
+        });
+
+        if (customers.length > 0) {
+            res.status(200).json(customers); // Ritorna i clienti trovati
+        } else {
+            res.status(404).json({ message: 'Cliente non trovato' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Errore nel server', error });
+    }
+};

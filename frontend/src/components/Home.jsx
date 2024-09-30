@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import { Container } from "react-bootstrap";
-// import BlogList from "../../components/blog/blog-list/BlogList";
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -15,7 +14,7 @@ import TodaysHouse from "./TodaysHouse";
 import ArrivalSummary from "./ArrivalSummary";
 import DepartureSummary from "./DepartureSummary";
 import InHouseSummary from "./InHouseSummary";
-
+import { useNavigate } from "react-router-dom";
 
 const Home = props => {
     let [searchParams, setSearchParams]=useSearchParams()
@@ -27,15 +26,15 @@ const Home = props => {
       }
     },[])
     const {token, setToken, userInfo, setUserInfo} = useContext(UserContext)
-    // console.log(authorInfo._id)
+    const navigate =useNavigate()
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [formValue, setFormValue] = useState({email:"", password:""})
     
-    const [showLogoutModal, setShowLogoutModal] = useState(false);
-    const handleShowLogoutModal = () => setShowLogoutModal(true);
-    const handleCloseLogoutModal = () => setShowLogoutModal(false);
+    // const [showLogoutModal, setShowLogoutModal] = useState(false);
+    // const handleShowLogoutModal = () => setShowLogoutModal(true);
+    // const handleCloseLogoutModal = () => setShowLogoutModal(false);
     
     const handleChange = (event) =>{
       setFormValue({
@@ -59,21 +58,23 @@ const Home = props => {
         console.log(error)
         alert(error + 'Errore, riporva più tardi')
       }
-      
     }
 
-    const handleLogout = () =>{
-        setToken(null)
-        setUserInfo(null)
-        localStorage.removeItem('token')
-        handleCloseLogoutModal()
-        alert('Logout effettuato')
-    }
+    // const handleLogout = () =>{
+    //     setToken(null)
+    //     setUserInfo(null)
+    //     localStorage.removeItem('token')
+    //     handleCloseLogoutModal()
+    //     alert('Logout effettuato')
+    // }
+    const handleNewReservation = () => {
+      navigate("/new"); // Porta alla pagina "New" per creare una nuova prenotazione
+    };
   
-    // console.log(posts)
     return (
       <Container fluid="sm">
         <h1 className="blog-main-title mb-3">Benvenuto sul PMS!</h1>
+      {/* Sezione Login */}
         {!token && <Button variant="primary" className="me-2" onClick={handleShow}>
           Login
         </Button>}
@@ -102,10 +103,18 @@ const Home = props => {
             </Button>
           </Modal.Footer>
         </Modal>
-        {token && <Button className="ms-2 me-2" variant="dark" onClick={handleShowLogoutModal}>
+        {/* {token && (<div className="d-flex justify-content-end mb-3"> <Button className="ms-2 me-2" variant="dark" onClick={handleShowLogoutModal}>
             Logout
-          </Button>}
-          <Modal show={showLogoutModal} onHide={handleCloseLogoutModal}>
+          </Button>  </div>)} */}
+           {/* Pulsante per aggiungere nuova prenotazione in alto a destra */}
+      {token && (
+        <div className="d-flex justify-content-end mb-3">
+          <Button variant="success" onClick={handleNewReservation}>
+            Nuova Prenotazione
+          </Button>
+        </div>
+      )}
+          {/* <Modal show={showLogoutModal} onHide={handleCloseLogoutModal}>
             <Modal.Header closeButton>
               <Modal.Title>Conferma Logout</Modal.Title>
             </Modal.Header>
@@ -118,7 +127,7 @@ const Home = props => {
                 Conferma Logout
               </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal> */}
         {token && (    <Row className="my-4 justify-content-center">
           <Col xs={12} md={4} className="mb-4 d-flex justify-content-center">
             <ArrivalSummary className="mx-auto" />
