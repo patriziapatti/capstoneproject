@@ -2,12 +2,13 @@
 
 POST {{baseUrl}}
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc4MDQzNDAsImV4cCI6MTcyNzgzMzE0MH0.RhtJLqOmERgoul-XupFHiUUr-dulc8P3a_DWS-1KOeo
 
 {
-    "name": "Salka",
+    "name": "Vincenzo",
     "surname": "Messana",
-    "username": "salka",
-    "email": "salka@messana.com",
+    "username": "vinmes",
+    "email": "vincenzo@messana.com",
     "password": "87654321"
 }
 

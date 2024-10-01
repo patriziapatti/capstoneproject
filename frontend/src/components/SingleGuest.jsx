@@ -1,23 +1,23 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Container, Card, Spinner, Alert } from 'react-bootstrap';
-import { getSingleBooking } from '../data/fetch';
+import { getSingleGuest } from '../data/fetch';
 import { UserContext } from '../context/UserContextProvider';
 
 
-const SingleBooking = () =>{
+const SingleGuest = () =>{
     const {token, setToken, userInfo, setUserInfo} = useContext(UserContext)
     const { id } = useParams(); // Ottieni l'ID della prenotazione dai parametri dell'URL
-    const [booking, setBooking] = useState(null);
+    const [guest, setGuest] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
 
     useEffect(() => {
-        const fetchBookingDetails = async () => {
+        const fetchGuestDetails = async () => {
           try {
-            const data = await getSingleBooking(id); // Richiesta per ottenere i dettagli della prenotazione
-            setBooking(data);
+            const data = await getSingleGuest(id); // Richiesta per ottenere i dettagli dell'ospite
+            setGuest(data);
           } catch (err) {
             setError(err.message || 'Errore durante il recupero della prenotazione.');
           } finally {
@@ -25,11 +25,11 @@ const SingleBooking = () =>{
           }
         };
     
-        fetchBookingDetails();
+        fetchGuestDetails();
       }, [id]);
 
 
-    return(<>{token&& 
+    return(<>{token &&
      <Container className="mt-5">
       {loading ? (
         <div className="d-flex justify-content-center my-4">
@@ -42,17 +42,14 @@ const SingleBooking = () =>{
       ) : (
         <Card>
           <Card.Header>
-            <h2>Dettagli Prenotazione</h2>
+            <h2>Dettagli Ospite</h2>
           </Card.Header>
           <Card.Body>
-            <p><strong>ID Prenotazione:</strong> {booking._id}</p>
-            <p><strong>Nome Cliente:</strong> {booking.customer.name} {booking.customer.surname}</p>
-            <p><strong>Email Cliente:</strong> {booking.customer.email}</p>
-            <p><strong>Data Check-In:</strong> {new Date(booking.checkInDate).toLocaleDateString()}</p>
-            <p><strong>Data Check-Out:</strong> {new Date(booking.checkOutDate).toLocaleDateString()}</p>
-            <p><strong>Stanza:</strong> {booking.room.roomNumber}</p>
-            <p><strong>Tipologia:</strong> {booking.room.type}</p>
-            <p><strong>Prezzo Totale:</strong> {booking.totalPrice}€</p>
+            <p><strong>ID Ospite:</strong> {guest._id}</p>
+            <p><strong>Nome:</strong> {guest.name} {guest.surname}</p>
+            <p><strong>Email:</strong> {guest.email}</p>
+            <p><strong>Data di nascita:</strong> {new Date(guest.dateOfBirth).toLocaleDateString()}</p>
+            <p><strong>Telefono:</strong> {guest.phone}</p>
           </Card.Body>
         </Card>
       )}
@@ -61,4 +58,4 @@ const SingleBooking = () =>{
     </>)
 }
 
-export default SingleBooking
+export default SingleGuest

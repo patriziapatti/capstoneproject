@@ -32,8 +32,8 @@ function MyNav() {
           <Nav className="me-auto">
             <Nav.Link as={Link} to={'/'}>Home</Nav.Link>
             <Nav.Link as={Link} to={'/bookings'}>Prenotazioni</Nav.Link>
-            <Nav.Link href="#ospiti">Ospiti</Nav.Link>
-            <Nav.Link href="#impostazioni">Impostazioni</Nav.Link>
+            <Nav.Link as={Link} to={'/guests'}>Ospiti </Nav.Link>
+            <Nav.Link as={Link} to={'/settings'}>Impostazioni</Nav.Link>
           </Nav>
           <Nav className="ms-auto">
                 <Nav.Link as={Link} to={'/profile'}>

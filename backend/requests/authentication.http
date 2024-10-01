@@ -16,5 +16,5 @@ Content-Type: application/json
  
 {
       "email": "salka@messana.com",
-      "password":"87654321"
+      "password":"12345678"
 } 

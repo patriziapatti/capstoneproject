@@ -81,8 +81,10 @@ export const login = async (req, res) => {
 
 export const changePassword = async (req, res) =>{
     try {
+
+    // Cerca l'utente con l'email fornita, inclusa la password
+    const user = await User.findById(req.loggedUser._id).select('+password');    
         // 1. Recupera l'utente loggato dal middleware di autenticazione
-    const user = req.loggedUser;
 
     // 2. Recupera la password corrente e la nuova password dal body della richiesta
     const { currentPassword, newPassword } = req.body;
@@ -98,8 +100,8 @@ export const changePassword = async (req, res) =>{
       return res.status(400).json({ message: 'La password corrente non è corretta.' });
     }
     // 5. Genera un hash della nuova password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+  
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // 6. Aggiorna la password dell'utente nel database
     user.password = hashedPassword;

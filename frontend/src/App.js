@@ -7,6 +7,9 @@ import New from './components/New';
 import Profile from './components/Profile';
 import BookingList from './components/BookingList';
 import SingleBooking from './components/SingleBooking';
+import Guests from './components/Guests';
+import SingleGuest from './components/SingleGuest';
+import Settings from './components/Settings';
 
 function App() {
   return (
@@ -19,6 +22,9 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/bookings" element={<BookingList />} />
         <Route path="/booking/:id" element={<SingleBooking />} />
+        <Route path="/guests" element={<Guests />} />
+        <Route path="/guests/:id" element={<SingleGuest/>} />
+        <Route path="/settings" element={<Settings/>} />
         {/* <Route path="/blog/:id" element={<Blog />} />
         <Route path="/new" element={<NewBlogPost />} />
         <Route path="/404" element={<NotFound />} />

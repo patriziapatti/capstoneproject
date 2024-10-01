@@ -294,7 +294,7 @@ export const getSingleBooking = async (bookingId) => {
     const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Se l'endpoint richiede autenticazione
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
     });
 
@@ -318,7 +318,7 @@ export const getAllGuests = async () => {
     const response = await fetch('http://localhost:5000/api/customers', {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Se l'endpoint richiede autenticazione
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
     });
 
@@ -327,10 +327,33 @@ export const getAllGuests = async () => {
       throw new Error(errorData.message || 'Errore durante il recupero degli ospiti');
     }
 
-    const bookings = await response.json();
-    return bookings;
+    const data = await response.json();
+    return data.dati;
   } catch (error) {
     console.error('Errore durante il recupero degli ospiti:', error.message);
     return [];
+  }
+};
+
+//FETCH PER RECUPERARE IL SINGOLO GUEST
+export const getSingleGuest = async (customerId) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/customers/${customerId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Errore durante il recupero dell ospite.');
+    }
+
+    const guest = await response.json();
+    return guest;
+  } catch (error) {
+    console.error('Errore durante il recupero dell ospite:', error.message);
+    throw error;
   }
 };

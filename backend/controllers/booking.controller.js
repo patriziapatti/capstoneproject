@@ -96,6 +96,10 @@ export const addBooking = async (req, res) => {
             totalPrice
         })
         await newBooking.save()
+
+        // Aggiorna il Customer aggiungendo il nuovo booking
+        await Customer.findByIdAndUpdate(customer, { $push: { bookings: newBooking._id } });
+
         const formattedCheckInDate = checkIn.toLocaleDateString('en-GB'); // 'en-GB' per formato DD/MM/YYYY
         const formattedCheckOutDate = checkOut.toLocaleDateString('en-GB')
         try {
@@ -124,7 +128,7 @@ export const editBooking = async (req, res) => {
         if (!booking) {
             return res.status(404).send({ message: `Booking with ID ${id} not found` });
         }
-        
+
         // Se lo stato della prenotazione è diverso da "reserved", non permettere la modifica delle date
         if (booking.status !== 'reserved') {
             return res.status(400).send({
@@ -238,7 +242,7 @@ export const deleteBooking = async (req, res) => {
     }
 }
 
-export const updatedBookingStatus =  async (req, res) => {
+export const updatedBookingStatus = async (req, res) => {
     const { id } = req.params; // ID della prenotazione
     const { status } = req.body; // Nuovo status (checkedIn o checkedOut)
 

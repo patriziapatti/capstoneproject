@@ -3,8 +3,8 @@ import Booking from '../models/bookingSchema.js'
 
 export const getAllCustomer = async (req, res) => {
     const page = req.query.page || 1;
-    let perPage = req.query.perPage || 5;
-    perPage = perPage > 10 ? 5 : perPage;
+    let perPage = req.query.perPage || 20;
+    perPage = perPage > 50 ? 25 : perPage;
 
     const name = req.query.name; // Prendi il parametro 'name' dalla query string
 
@@ -15,6 +15,7 @@ export const getAllCustomer = async (req, res) => {
 
     try {
         const allCustomer = await Customer.find(query)
+            .populate('bookings')
             .collation({ locale: 'it' }) // Ignora maiuscole/minuscole nell'ordine alfabetico del sort
             .sort({ surname: 1 })
             .skip((page - 1) * perPage) // Salta la pagina precedente

@@ -25,10 +25,10 @@ const customerSchema = new Schema(
             type: Date,
             required: true,
         },
-        bookings: {
+        bookings: [{
             type: Schema.Types.ObjectId,
             ref: 'Booking',
-        },
+        }],
     },
     {collection: "customers", timestamps: true}
 )
