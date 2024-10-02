@@ -98,6 +98,7 @@ function BookingList() {
               <th>Tipologia</th>
               <th>Adulti</th>
               <th>Bambini</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -125,6 +126,7 @@ function BookingList() {
                   <td>{booking.room.type}</td>
                   <td>{booking.pax.adults}</td>
                   <td>{booking.pax.children}</td>
+                  <td>{booking.status.toUpperCase()}</td>
                   <td>
                     <Button
                       variant="warning"
