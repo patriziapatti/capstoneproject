@@ -357,3 +357,20 @@ export const getSingleGuest = async (customerId) => {
     throw error;
   }
 };
+
+
+//FETCH PER AGGIORNERE LO STATUS DELLA PRENOTAZIONE
+
+export const updateBookingStatus = async (id, status) => {
+  const response = await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem('token')}`
+    },
+    body: JSON.stringify(status),
+  });
+  if (!response.ok) {
+    throw new Error("Errore durante l'aggiornamento dello stato della prenotazione.");
+  }
+};

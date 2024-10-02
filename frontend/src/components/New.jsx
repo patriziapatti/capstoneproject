@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContextProvider";
-import { Container, Form, Alert, Dropdown, Button } from "react-bootstrap";
+import { Container, Form, Alert, Dropdown, Button, Spinner } from "react-bootstrap";
 import { getAllCustomer, addNewCustomer, addNewBooking, getAvailableRooms } from "../data/fetch";
 import { Navigate } from "react-router-dom";
 
@@ -13,6 +13,8 @@ const New = () => {
     const [filteredCustomers, setFilteredCustomers] = useState([]);  // Stato per gestire i risultati filtrati
     const [selectedCustomer, setSelectedCustomer] = useState(null);  // Stato per gestire il customer selezionato
     const [newCustomer, setNewCustomer] = useState(false);  // Stato per gestire se bisogna creare un nuovo customer
+    const [isRoomsLoaded, setIsRoomsLoaded] = useState(false) // Stato per sapere se le stanze sono caricate
+    const [isBookingLoading, setIsBookingLoading] = useState(false); // Stato per gestire il caricamento
     const [formData, setFormData] = useState({
         checkInDate: "",
         checkOutDate: "",
@@ -73,11 +75,13 @@ const New = () => {
                 const data = await getAvailableRooms({ checkInDate, checkOutDate, adults, children });
                 setRooms(data.dati);
                 setError(null);
+                setIsRoomsLoaded(true);  // Imposta lo stato su true se la fetch è andata a buon fine
             } catch (err) {
                 console.error("Errore durante la fetch delle stanze disponibili:", err);
                 console.log(err);
                 if (err.status !== 400) {
                     setError("Errore nel caricamento delle stanze disponibili.");
+                    setIsRoomsLoaded(false);  // Mantieni lo stato su false in caso di errore
                 }
                 
             }
@@ -132,6 +136,7 @@ const New = () => {
     // Gestisce l'invio della nuova prenotazione
     const handleSubmitBooking = async (event) => {
         event.preventDefault();
+        setIsBookingLoading(true); //inizia il caricamento
         const form = event.target;
         const bookingData = {
             customer: selectedCustomer._id,
@@ -148,9 +153,11 @@ const New = () => {
         try {
             await addNewBooking(bookingData);
             alert("Prenotazione aggiunta con successo!");
+            setIsBookingLoading(false)
         } catch (err) {
             console.error("Errore durante l'aggiunta della prenotazione:", err);
             setError("Errore durante l'aggiunta della prenotazione.");
+            setIsBookingLoading(false)
         }
     };
 
@@ -175,25 +182,29 @@ const New = () => {
                     <Form.Label>Numero di Bambini</Form.Label>
                     <Form.Control type="number" name="children" min="0" value={formData.children} onChange={handleInputChange} required />
                 </Form.Group>
-                <Button variant="primary" type="button" onClick={handleVerifyRoomClick}>
-                    Verifica Date
+                <Button className="mt-2"variant="primary" type="button" onClick={handleVerifyRoomClick}>
+                    Verifica Disponibilità
                 </Button>
+
+            {/* Mostra la selezione delle stanze solo se le stanze sono state caricate */}
+            {isRoomsLoaded && (
                 <Form.Group controlId="formBookingRoom">
-                    <Form.Label>Stanza Disponibile</Form.Label>
-                    <Form.Control as="select" name="room" required>
+                    <Form.Label className="mt-2">Stanze Disponibili</Form.Label>
+                    <Form.Control className="mt-2" as="select" name="room" required>
                         <option value="">Seleziona una stanza...</option>
                         {rooms.map((room) => (
                             <option key={room._id} value={room._id}>{room.roomNumber} - Capacità: {room.maxPax}</option>
                         ))}
                     </Form.Control>
                 </Form.Group>
+            )}
                 {/* <Form.Group controlId="formBookingTotalPrice">
                     <Form.Label>Prezzo Totale (€)</Form.Label>
                     <Form.Control type="number" name="totalPrice" min="0" step="0.01" required />
                 </Form.Group> */}
-                <Button variant="primary" type="submit">
-                    Conferma Prenotazione
-                </Button>
+                {isRoomsLoaded && (  <Button variant="primary" type="submit" disabled={isBookingLoading}>
+                {isBookingLoading ? <Spinner animation="border" size="lg" /> : "Conferma Prenotazione"}
+            </Button>)}
             </Form>
             
         );
