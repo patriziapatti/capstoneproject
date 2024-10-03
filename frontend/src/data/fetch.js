@@ -359,7 +359,7 @@ export const getSingleGuest = async (customerId) => {
 };
 
 
-//FETCH PER AGGIORNERE LO STATUS DELLA PRENOTAZIONE
+//FETCH PER AGGIORNERE LO STATUS DELLA PRENOTAZIONE (check in & out)
 
 export const updateBookingStatus = async (id, status) => {
   const response = await fetch(`http://localhost:5000/api/bookings/${id}/status`, {
