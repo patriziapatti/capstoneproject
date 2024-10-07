@@ -15,6 +15,7 @@ import ArrivalSummary from "./ArrivalSummary";
 import DepartureSummary from "./DepartureSummary";
 import InHouseSummary from "./InHouseSummary";
 import { useNavigate } from "react-router-dom";
+import './style.css'
 
 const Home = props => {
     let [searchParams, setSearchParams]=useSearchParams()
@@ -73,9 +74,43 @@ const Home = props => {
   
     return (
       <Container fluid="sm">
-        <h1 className="blog-main-title mb-3">Benvenuto sul PMS!</h1>
+        {/* <h1 className="blog-main-title mb-3 text-center pt-5">Benvenuto sul PMS!</h1> */}
       {/* Sezione Login */}
-        {!token && <Button variant="primary" className="me-2" onClick={handleShow}>
+      {!token && (
+        <div className="login-page d-flex align-items-center justify-content-center">
+          <div className="login-box p-4 rounded">
+            <h2 className="mb-4">Accedi al tuo account</h2>
+            <Form>
+              <Form.Group className="mb-3" controlId="formEmail">
+                <Form.Label>Email address</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={formValue.email}
+                  onChange={handleChange}
+                  placeholder="name@example.com"
+                  required
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formPassword">
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  name="password"
+                  value={formValue.password}
+                  onChange={handleChange}
+                  placeholder="your password"
+                  required
+                />
+              </Form.Group>
+              <Button variant="primary" onClick={handleLogin} className="w-100">
+                Login
+              </Button>
+            </Form>
+          </div>
+        </div>
+      )}
+        {/* {!token && <Button variant="primary" className="me-2" onClick={handleShow}>
           Login
         </Button>}
         <Modal show={show} onHide={handleClose}>
@@ -102,14 +137,14 @@ const Home = props => {
               Login now
             </Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
         {/* {token && (<div className="d-flex justify-content-end mb-3"> <Button className="ms-2 me-2" variant="dark" onClick={handleShowLogoutModal}>
             Logout
           </Button>  </div>)} */}
            {/* Pulsante per aggiungere nuova prenotazione in alto a destra */}
       {token && (
         <div className="d-flex justify-content-end mb-3">
-          <Button variant="success" onClick={handleNewReservation}>
+          <Button className="mt-2" variant="success" onClick={handleNewReservation}>
             Nuova Prenotazione
           </Button>
         </div>

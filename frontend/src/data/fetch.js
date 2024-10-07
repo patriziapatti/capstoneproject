@@ -294,6 +294,29 @@ export const deleteBookingById = async (bookingId) => {
     }
   };
 
+  //FETCH PER MODIFICARE UNA BOOKING:
+  export const editBooking = async (bookingId, updatedData ) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Errore durante la modifica della prenotazione');
+      }
+  
+      return await response.json();
+    } catch (error) {
+      console.error('Errore durante la modifica della prenotazione:', error);
+      throw error;
+    }
+  };
+
 //FETCH PER RECUPERARE LA SINGOLA BOOKING
 export const getSingleBooking = async (bookingId) => {
   try {
@@ -415,6 +438,32 @@ export const fetchAllUsers = async (page = 1, perPage = 9) => {
     return await response.json();
   } catch (error) {
     console.error('Errore nella fetch degli utenti:', error);
+    throw error;
+  }
+};
+
+//FETCH PER ELIMINARE UNA UN OSPITE
+export const deleteGuestById = async (customerId) => {
+  try {
+    // Invio della richiesta DELETE al server
+    const response = await fetch(`http://localhost:5000/api/customers/${customerId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Errore durante l\'eliminazione dell ospite');
+    }
+
+    // Se la richiesta ha successo, restituisci il messaggio di conferma
+    const message = await response.text();
+    return message;
+  } catch (error) {
+    console.error('Errore durante l\'eliminazione dell ospite:', error.message);
     throw error;
   }
 };

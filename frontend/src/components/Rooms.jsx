@@ -57,7 +57,7 @@ function Rooms() {
                                 style={{
                                     padding: '5px 10px',
                                     fontSize: '12px',
-                                    backgroundColor: '#28a745',
+                                    backgroundColor: '#17a2b8',
                                     color: '#fff',
                                     border: 'none',
                                     borderRadius: '5px',

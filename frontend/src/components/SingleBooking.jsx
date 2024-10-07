@@ -52,6 +52,8 @@ const SingleBooking = () =>{
             <p><strong>Data Check-Out:</strong> {new Date(booking.checkOutDate).toLocaleDateString()}</p>
             <p><strong>Stanza:</strong> {booking.room.roomNumber}</p>
             <p><strong>Tipologia:</strong> {booking.room.type}</p>
+            <p><strong>Adulti:</strong> {booking.pax.adults}</p>
+            <p><strong>Bambini:</strong> {booking.pax.children}</p>
             <p><strong>Prezzo Totale:</strong> {booking.totalPrice}€</p>
           </Card.Body>
         </Card>

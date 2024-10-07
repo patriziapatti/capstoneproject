@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContextProvider";
 import { Container, Form, Alert, Dropdown, Button, Spinner } from "react-bootstrap";
 import { getAllCustomer, addNewCustomer, addNewBooking, getAvailableRooms } from "../data/fetch";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const New = () => {
     const { token, setToken } = useContext(UserContext);
@@ -21,6 +21,8 @@ const New = () => {
         adults: 1,
         children: 0,
     });
+
+    const navigate = useNavigate()
 
     // Funzione per gestire la ricerca del customer
     const handleSearch = (event) => {
@@ -154,6 +156,7 @@ const New = () => {
             await addNewBooking(bookingData);
             alert("Prenotazione aggiunta con successo!");
             setIsBookingLoading(false)
+            navigate("/bookings")
         } catch (err) {
             console.error("Errore durante l'aggiunta della prenotazione:", err);
             setError("Errore durante l'aggiunta della prenotazione.");
