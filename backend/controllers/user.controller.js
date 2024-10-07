@@ -77,14 +77,14 @@ export const addUser = async (req, res) => {
         // Salva l'utente nel database
         const newUser = await user.save();
 
-        // Invia email con username e password (opzionale, valuta se inviare la password in chiaro è sicuro)
-        await transport.sendMail({
-            from: 'noreply@epicoders.com',
-            to: newUser.email,
-            subject: 'Welcome to PMS',
-            text: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
-            html: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
-        });
+        // Invia email con username e password 
+        // await transport.sendMail({
+        //     from: 'noreply@epicoders.com',
+        //     to: newUser.email,
+        //     subject: 'Welcome to PMS',
+        //     text: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
+        //     html: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
+        // });
 
         // Rispondi con i dati dell'utente creato
         res.status(200).send(newUser);

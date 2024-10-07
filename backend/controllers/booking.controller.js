@@ -102,18 +102,18 @@ export const addBooking = async (req, res) => {
 
         const formattedCheckInDate = checkIn.toLocaleDateString('en-GB'); // 'en-GB' per formato DD/MM/YYYY
         const formattedCheckOutDate = checkOut.toLocaleDateString('en-GB')
-        try {
-            const customer = await Customer.findById(newBooking.customer)
-            await transport.sendMail({
-                from: 'noreply@epicoders.com', // sender address
-                to: customer.email, // list of receivers
-                subject: "New Booking", // Subject line
-                text: `Dear ${customer.name}, Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to pay at check-out.`, // plain text body
-                html: `<b>Dear ${customer.name}, <br> Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to pay at check-out.<b>` // html body
-            })
-        } catch (emailError) {
-            console.error('Error sending email:', emailError);
-        }
+        // try {
+        //     const customer = await Customer.findById(newBooking.customer)
+        //     await transport.sendMail({
+        //         from: 'noreply@epicoders.com', // sender address
+        //         to: customer.email, // list of receivers
+        //         subject: "New Booking", // Subject line
+        //         text: `Dear ${customer.name}, Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to pay at check-out.`, // plain text body
+        //         html: `<b>Dear ${customer.name}, <br> Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to pay at check-out.<b>` // html body
+        //     })
+        // } catch (emailError) {
+        //     console.error('Error sending email:', emailError);
+        // }
         res.status(200).send(newBooking)
     } catch (error) {
         return res.status(400).send(error)
@@ -198,13 +198,13 @@ export const editBooking = async (req, res) => {
         const customerEmail = booking.customer.email;
 
         // Invia l'email di conferma
-        await transport.sendMail({
-            from: 'noreply@epicoders.com',
-            to: customerEmail,
-            subject: "Booking Updated",
-            text: `Dear ${customerName}, Your reservation has been updated. Here are the new details: Check-in from ${checkIn.toLocaleDateString('en-GB')} to ${checkOut.toLocaleDateString('en-GB')}, total price: ${updatedBooking.totalPrice}€.`,
-            html: `<b>Dear ${customerName}, <br> Your reservation has been updated. Here are the new details: Check-in from ${checkIn.toLocaleDateString('en-GB')} to ${checkOut.toLocaleDateString('en-GB')}, total price: ${updatedBooking.totalPrice}€.</b>`
-        });
+        // await transport.sendMail({
+        //     from: 'noreply@epicoders.com',
+        //     to: customerEmail,
+        //     subject: "Booking Updated",
+        //     text: `Dear ${customerName}, Your reservation has been updated. Here are the new details: Check-in from ${checkIn.toLocaleDateString('en-GB')} to ${checkOut.toLocaleDateString('en-GB')}, total price: ${updatedBooking.totalPrice}€.`,
+        //     html: `<b>Dear ${customerName}, <br> Your reservation has been updated. Here are the new details: Check-in from ${checkIn.toLocaleDateString('en-GB')} to ${checkOut.toLocaleDateString('en-GB')}, total price: ${updatedBooking.totalPrice}€.</b>`
+        // });
 
         res.status(200).send(updatedBooking);
     } catch (error) {
@@ -223,18 +223,18 @@ export const deleteBooking = async (req, res) => {
             const checkInDate = booking.checkInDate.toLocaleDateString('en-GB')
             const checkOutDate = booking.checkOutDate.toLocaleDateString('en-GB')
             await Booking.findByIdAndDelete(id)
-            try {
-                await transport.sendMail({
-                    from: `noreply@epicoders.com`, // sender address
-                    to: customerEmail, // list of receivers
-                    subject: "New Booking", // Subject line
-                    text: `Dear ${customerName}, Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled.`, // plain text body
-                    html: `<b>Dear ${customerName}, <br> Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled.<b>` // html body
-                })
+            // try {
+            //     await transport.sendMail({
+            //         from: `noreply@epicoders.com`, // sender address
+            //         to: customerEmail, // list of receivers
+            //         subject: "New Booking", // Subject line
+            //         text: `Dear ${customerName}, Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled.`, // plain text body
+            //         html: `<b>Dear ${customerName}, <br> Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled.<b>` // html body
+            //     })
 
-            } catch (emailError) {
-                console.error('Error sending email:', emailError)
-            }
+            // } catch (emailError) {
+            //     console.error('Error sending email:', emailError)
+            // }
             res.status(200).send(`ho eliminato la prenotazione con id: ${id}`)
         } else { res.status(404).send({ message: `ID ${id} not found` }) }
     } catch (error) {

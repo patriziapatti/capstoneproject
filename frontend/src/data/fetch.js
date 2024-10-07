@@ -467,3 +467,55 @@ export const deleteGuestById = async (customerId) => {
     throw error;
   }
 };
+
+//FETCH PER ELIMINARE UNA UNA ROOM
+export const deleteRoomById = async (roomId) => {
+  try {
+    // Invio della richiesta DELETE al server
+    const response = await fetch(`http://localhost:5000/api/rooms/${roomId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Errore durante l\'eliminazione della room');
+    }
+
+    // Se la richiesta ha successo, restituisci il messaggio di conferma
+    const message = await response.text();
+    return message;
+  } catch (error) {
+    console.error('Errore durante l\'eliminazione della room:', error.message);
+    throw error;
+  }
+};
+
+//FETCH PER ELIMINARE UNA UN USER
+export const deleteUserById = async (userId) => {
+  try {
+    // Invio della richiesta DELETE al server
+    const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Errore durante l\'eliminazione dell\'utente');
+    }
+
+    // Se la richiesta ha successo, restituisci il messaggio di conferma
+    const message = await response.text();
+    return message;
+  } catch (error) {
+    console.error('Errore durante l\'eliminazione dell\'utente', error.message);
+    throw error;
+  }
+};
