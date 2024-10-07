@@ -5,8 +5,8 @@ import bcrypt from 'bcrypt';
 
 export const getAllUsers = async (req,res)=>{
     const page = req.query.page || 1
-    let perPage = req.query.perPage || 5
-    perPage = perPage > 10 ? 5 : perPage
+    let perPage = req.query.perPage || 9
+    perPage = perPage > 10 ? 9 : perPage
     try {
         const allUsers = await User.find({})
         .collation({locale: 'it'}) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort

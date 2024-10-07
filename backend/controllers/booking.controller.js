@@ -417,11 +417,33 @@ export const getBookingsForPlanning = async (req, res) => {
         yesterday.setDate(today.getDate() - 1)
         yesterday.setHours(0, 0, 0, 0)//imposto l'orario a mezzanotte
 
+        const page = req.query.page || 1
+        let perPage = req.query.perPage || 15
+        perPage = perPage > 20 ? 15 : perPage
+
         //trovo le prenotazioni con data di check-in maggiore di ieri
         const bookings = await Booking.find({
             checkInDate: { $gt: yesterday }
-        }).populate('customer').populate('room')
-        res.status(200).send(bookings)
+        })
+            .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
+            .sort({ checkInDate: 1 })
+            .skip((page - 1) * perPage)//salto la pagina precedente
+            .limit(perPage)
+            .populate('customer').populate('room')
+
+        const totalResults = await Booking.countDocuments({
+            checkInDate: { $gt: yesterday }
+        })
+
+        const totalPages = Math.ceil(totalResults / perPage)
+
+        res.status(200).send({
+            dati: bookings,
+            totalResults,
+            totalPages,
+            page,
+            perPage,
+        })
     } catch (error) {
         res.status(500).send({ message: `Errore durante il recupero delle prenotazioni: ${error.message}` })
     }

@@ -7,14 +7,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY0N
 
 POST {{baseUrl}}
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3Mjc3NzM1MTQsImV4cCI6MTcyNzgwMjMxNH0.uZXBV0G32JFMVe7DfkLjSRjYGFfF0xXL7cKsMxABETQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmY1NWI4MzEwMDlkY2Y2ZWIzNGY5NGMiLCJpYXQiOjE3MjgyOTE0MjMsImV4cCI6MTcyODMyMDIyM30.WWf40K-FP816qXI4TOSCIsLoO09WxwugfswK-UKIcxs
 {
     "customer": "66fb00c5c730fa9f6a361269",
-    "checkInDate": "2024-10-01",
-    "checkOutDate": "2024-10-03",
-    "room": "66ed9526fd35acb318a122c4",
+    "checkInDate": "2024-10-09",
+    "checkOutDate": "2024-10-10",
+    "room": "66ed9504fd35acb318a122be",
     "pax": {
-        "adults": 2,
+        "adults": 1,
         "children": 0
     },
     "status": "reserved",

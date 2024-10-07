@@ -240,9 +240,9 @@ export const changeUserPassword = async(currentPassword, newPassword) => {
 
 
 //FETCH PER RECUPERARE LE PRENOTAZIONI CON CHECK IN DA OGGI IN POI
-export const getBookingsForPlanning = async () => {
+export const getBookingsForPlanning = async (page = 1, perPage = 15) => {
     try {
-      const response = await fetch('http://localhost:5000/api/bookings/booking-planning', {
+      const response = await fetch(`http://localhost:5000/api/bookings/booking-planning?page=${page}&perPage=${perPage}`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`, // Se l'endpoint richiede autenticazione
@@ -258,7 +258,13 @@ export const getBookingsForPlanning = async () => {
       return bookings;
     } catch (error) {
       console.error('Errore durante il recupero delle prenotazioni:', error.message);
-      return [];
+      return {
+        dati: [],
+        totalResults: 0,
+        totalPages: 0,
+        page: 1,
+        perPage: 15,
+      };
     }
   };
   
@@ -372,5 +378,43 @@ export const updateBookingStatus = async (id, status) => {
   });
   if (!response.ok) {
     throw new Error("Errore durante l'aggiornamento dello stato della prenotazione.");
+  }
+};
+
+//FETCH PER CHIAMARE TUTTE LE CAMERE
+export const fetchAllRooms = async (page = 1, perPage = 20) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/rooms?page=${page}&perPage=${perPage}`,{
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('token')}`
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Errore durante il recupero delle stanze');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Errore nella fetch delle stanze:', error);
+    throw error;
+  }
+};
+
+//FETCH PER CHIAMARE TUTTI GLI UTENTI
+export const fetchAllUsers = async (page = 1, perPage = 9) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/users?page=${page}&perPage=${perPage}`,{
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem('token')}`
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Errore durante il recupero degli utenti');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Errore nella fetch degli utenti:', error);
+    throw error;
   }
 };

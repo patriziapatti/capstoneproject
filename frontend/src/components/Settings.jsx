@@ -1,6 +1,9 @@
 import { useContext } from "react";
 import { UserContext } from "../context/UserContextProvider";
 import { Container, Tab, Tabs, Card } from "react-bootstrap";
+import Rooms from "./Rooms";
+import Users from "./Users";
+
 
 const Settings = () => {
   const { token, userInfo } = useContext(UserContext);
@@ -21,8 +24,8 @@ const Settings = () => {
               <p className="text-muted">
                 Qui puoi configurare le impostazioni per le camere. Puoi aggiungere, modificare o rimuovere le informazioni relative a ciascuna camera.
               </p>
-              {/* In futuro, inserire qui i componenti specifici per gestire le camere */}
-              <p>-- Area di configurazione camere --</p>
+              {/* componenti specifici per gestire le camere */}
+              <Rooms/>
             </Card.Body>
           </Card>
         </Tab>
@@ -35,8 +38,8 @@ const Settings = () => {
               <p className="text-muted">
                 Qui puoi gestire gli utenti del sistema. Aggiungi nuovi utenti, modifica oppure rimuovi utenti esistenti.
               </p>
-              {/* In futuro, inserire qui i componenti specifici per gestire gli utenti */}
-              <p>-- Area di configurazione utenti --</p>
+              {/*  componenti specifici per gestire gli utenti */}
+              <Users />
             </Card.Body>
           </Card>
         </Tab>

@@ -3,8 +3,8 @@ import Booking from '../models/bookingSchema.js'
 
 export const getAllRooms = async (req,res)=>{
     const page = req.query.page || 1
-    let perPage = req.query.perPage || 5
-    perPage = perPage > 10 ? 5 : perPage
+    let perPage = req.query.perPage || 20
+    perPage = perPage > 20 ? 20 : perPage
     try {
         const allRooms = await Room.find({})
         .collation({locale: 'it'}) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
