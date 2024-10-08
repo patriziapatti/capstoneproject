@@ -63,6 +63,7 @@ export const editCustomer = async (req,res)=>{
     const {id} =req.params
     try {
         const customer = await Customer.findByIdAndUpdate(id, req.body, {new:true}) //new serve per restituire in author l'oggetto appena inserito, altrimenti non lo restituisce
+        .populate('bookings')
         await customer.save();
         // res.send(`sono la put e modifico l'autore con id ${id}`)
         res.status(200).send(customer)

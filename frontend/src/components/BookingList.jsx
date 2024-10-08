@@ -17,7 +17,7 @@ function BookingList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
-  const [perPage] = useState(15); // Fissa il numero di elementi per pagina a 20
+  const [perPage] = useState(15); // Fissa il numero di elementi per pagina 
   const navigate = useNavigate();
 
   // Stato per la prenotazione in modifica
@@ -88,7 +88,7 @@ function BookingList() {
     <>
       {token && (
         <Container className="mt-5">
-          <h2>Prossime prenotazioni</h2>
+          {editingBooking? "" : <h2>Prossime prenotazioni</h2>}
 
           {/* Mostra messaggio di successo per la cancellazione */}
           {deleteSuccess && (

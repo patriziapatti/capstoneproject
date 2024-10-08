@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { fetchAllRooms, deleteRoomById } from "../data/fetch";
-import { Alert } from "react-bootstrap";
+import { useEffect, useState, useRef } from "react";
+import { fetchAllRooms, deleteRoomById, editRoomById } from "../data/fetch";
+import { Alert, Form, Button } from "react-bootstrap";
 
 function Rooms() {
     const [rooms, setRooms] = useState([]);
@@ -10,6 +10,12 @@ function Rooms() {
     const [totalPages, setTotalPages] = useState(1); // Stato per il numero totale di pagine
     const [deleteError, setDeleteError] = useState(''); // Messaggio di errore specifico per la cancellazione
     const [deleteSuccess, setDeleteSuccess] = useState(''); // Messaggio di successo specifico per la cancellazione
+    const [editError, setEditError] = useState('');
+    const [editSuccess, setEditSuccess] = useState('');
+    const [selectedRoom, setSelectedRoom] = useState(null);
+
+    // Referenza per il form di modifica
+    const formRef = useRef(null);
 
     useEffect(() => {
         const loadRooms = async () => {
@@ -27,8 +33,21 @@ function Rooms() {
         loadRooms();
     }, [page]);
 
-    if (loading) return <div>Caricamento...</div>;
-    if (error) return <div>{error}</div>;
+    useEffect(() => {
+        if (editSuccess) setTimeout(() => setEditSuccess(''), 3000);
+        if (editError) setTimeout(() => setEditError(''), 3000);
+        if (deleteSuccess) setTimeout(() => setDeleteSuccess(''), 3000);
+        if (deleteError) setTimeout(() => setDeleteError(''), 3000);
+    }, [editSuccess, editError, deleteSuccess, deleteError]);
+
+
+
+    // Esegui lo scroll al form di modifica quando selectedRoom cambia
+    useEffect(() => {
+        if (selectedRoom && formRef.current) {
+            formRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [selectedRoom]);
 
     const handleDelete = async (roomId) => {
         if (window.confirm('Sei sicuro di voler eliminare questa camera?')) {
@@ -43,6 +62,29 @@ function Rooms() {
         }
     };
 
+    const handleEdit = (room) => {
+        setSelectedRoom(room);
+        // scrollToForm(); // Scorre la pagina fino al form di modifica
+        // setShowModal(true);
+    };
+
+    const handleSaveEdit = async () => {
+        if (selectedRoom) {
+            try {
+                const updatedRoom = await editRoomById(selectedRoom._id, selectedRoom);
+                setRooms(rooms.map((room) => (room._id === selectedRoom._id ? updatedRoom : room)));
+                console.log(selectedRoom)
+                setEditSuccess('Camera modificata con successo!');
+                setSelectedRoom(null); // Chiude il form dopo la modifica
+                // setShowModal(false);
+            } catch (err) {
+                setEditError('Errore durante la modifica della camera.');
+            }
+        }
+    };
+
+    if (loading) return <div>Caricamento...</div>;
+    if (error) return <div>{error}</div>;
     return (
         <div style={{ padding: '20px' }}>
             <h2 style={{ textAlign: 'center' }}>Tutte le Stanze</h2>
@@ -61,7 +103,7 @@ function Rooms() {
                 </Alert>
             )}
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
+            <div className="mb-2" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
                 {rooms.map(room => (
                     <div
                         key={room._id}
@@ -84,6 +126,7 @@ function Rooms() {
                         {/* Sezione Pulsanti */}
                         <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-around' }}>
                             <button
+                                onClick={() => handleEdit(room)}
                                 style={{
                                     padding: '5px 10px',
                                     fontSize: '12px',
@@ -100,7 +143,7 @@ function Rooms() {
                                 </svg>
                             </button>
                             <button
-                            onClick={() => handleDelete(room._id)}
+                                onClick={() => handleDelete(room._id)}
                                 style={{
                                     padding: '5px 10px',
                                     fontSize: '12px',
@@ -122,6 +165,9 @@ function Rooms() {
                 ))}
             </div>
 
+            {editSuccess && <Alert variant="success" dismissible>{editSuccess}</Alert>}
+            {editError && <Alert variant="danger" dismissible>{editError}</Alert>}
+
             {/* Paginazione */}
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button onClick={() => setPage(page - 1)} disabled={page <= 1}
@@ -136,7 +182,52 @@ function Rooms() {
                     Avanti
                 </button>
             </div>
-
+            {/* Form di Modifica sotto  */}
+            {selectedRoom && (
+                <div ref={formRef} className="edit-form-container p-3 border mt-4 w-25">
+                    <h4>Modifica Camera</h4>
+                    <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Numero</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={selectedRoom.roomNumber}
+                                onChange={(e) => setSelectedRoom({ ...selectedRoom, roomNumber: e.target.value })}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Tipologia</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={selectedRoom.type}
+                                onChange={(e) => setSelectedRoom({ ...selectedRoom, type: e.target.value })}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Prezzo</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={selectedRoom.price}
+                                onChange={(e) => setSelectedRoom({ ...selectedRoom, price: e.target.value })}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Max Ospiti</Form.Label>
+                            <Form.Control
+                                type="number"
+                                value={selectedRoom.maxPax}
+                                onChange={(e) => setSelectedRoom({ ...selectedRoom, maxPax: e.target.value })}
+                            />
+                        </Form.Group>
+                        <div className="d-flex justify-content-start">
+                            <Button className="me-1" variant="dark" onClick={() => setSelectedRoom(null)}>X</Button>
+                            <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                            </svg></Button>
+                        </div>
+                    </Form>
+                </div>
+            )}
         </div>
     );
 }

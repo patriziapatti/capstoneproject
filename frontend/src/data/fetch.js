@@ -468,6 +468,27 @@ export const deleteGuestById = async (customerId) => {
   }
 };
 
+//FETCH PER MODIFICARE UN OSPITE
+export const editGuestById = async (guestId, updatedData) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/customers/${guestId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(updatedData),
+    });
+    if (!response.ok) {
+      throw new Error(`Errore nella modifica dell'ospite`);
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 //FETCH PER ELIMINARE UNA UNA ROOM
 export const deleteRoomById = async (roomId) => {
   try {
@@ -494,6 +515,27 @@ export const deleteRoomById = async (roomId) => {
   }
 };
 
+//FETCH PER MODIFICARE UNA CAMERA
+export const editRoomById = async (roomId, updatedData) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/rooms/${roomId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(updatedData),
+    });
+    if (!response.ok) {
+      throw new Error(`Errore nella modifica della camera`);
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 //FETCH PER ELIMINARE UNA UN USER
 export const deleteUserById = async (userId) => {
   try {
@@ -517,5 +559,26 @@ export const deleteUserById = async (userId) => {
   } catch (error) {
     console.error('Errore durante l\'eliminazione dell\'utente', error.message);
     throw error;
+  }
+};
+
+//FETCH PER MODIFICARE UN UTENTE
+export const editUserById = async (userId, updatedData) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(updatedData),
+    });
+    if (!response.ok) {
+      throw new Error(`Errore nella modifica dell'utente'`);
+    }
+    return await response.json();
+  } catch (err) {
+    console.error(err);
+    throw err;
   }
 };

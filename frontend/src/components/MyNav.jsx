@@ -22,6 +22,12 @@ function MyNav() {
       alert('Logout effettuato')
       navigate('/')
   }
+
+  const handleNewReservation = () => {
+    navigate("/new"); // Porta alla pagina "New" per creare una nuova prenotazione
+  };
+
+
   return (<>
     {token && <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -35,13 +41,19 @@ function MyNav() {
             <Nav.Link as={Link} to={'/guests'}>Ospiti </Nav.Link>
             <Nav.Link as={Link} to={'/settings'}>Impostazioni</Nav.Link>
           </Nav>
+          
           <Nav className="ms-auto">
-                <Nav.Link as={Link} to={'/profile'}>
+          <Nav.Link as={Link} to={'/profile'}>
                   {userInfo && userInfo.name ? `Ciao, ${userInfo.name}` : ""}
                 </Nav.Link>
+          <Button variant="success" onClick={handleNewReservation}>
+            Nuova Prenotazione
+          </Button>
+                
                 <Button className="ms-2 me-2" variant="dark" onClick={handleShowLogoutModal}>
             Logout
           </Button>
+          
           <Modal show={showLogoutModal} onHide={handleCloseLogoutModal}>
             <Modal.Header closeButton>
               <Modal.Title>Conferma Logout</Modal.Title>

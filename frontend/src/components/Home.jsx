@@ -142,13 +142,13 @@ const Home = props => {
             Logout
           </Button>  </div>)} */}
            {/* Pulsante per aggiungere nuova prenotazione in alto a destra */}
-      {token && (
+      {/* {token && (
         <div className="d-flex justify-content-end mb-3">
           <Button className="mt-2" variant="success" onClick={handleNewReservation}>
             Nuova Prenotazione
           </Button>
         </div>
-      )}
+      )} */}
           {/* <Modal show={showLogoutModal} onHide={handleCloseLogoutModal}>
             <Modal.Header closeButton>
               <Modal.Title>Conferma Logout</Modal.Title>
