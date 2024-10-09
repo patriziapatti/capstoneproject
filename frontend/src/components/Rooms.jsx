@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { fetchAllRooms, deleteRoomById, editRoomById } from "../data/fetch";
+import { fetchAllRooms, deleteRoomById, editRoomById , addRoom} from "../data/fetch";
 import { Alert, Form, Button } from "react-bootstrap";
 
 function Rooms() {
@@ -13,6 +13,16 @@ function Rooms() {
     const [editError, setEditError] = useState('');
     const [editSuccess, setEditSuccess] = useState('');
     const [selectedRoom, setSelectedRoom] = useState(null);
+    const [newRoom, setNewRoom] = useState({
+        roomNumber: '',
+        type: '',
+        price: '',
+        maxPax: '',
+    });
+    const [addSuccess, setAddSuccess] = useState('');
+    const [addError, setAddError] = useState('');
+
+
 
     // Referenza per il form di modifica
     const formRef = useRef(null);
@@ -38,7 +48,9 @@ function Rooms() {
         if (editError) setTimeout(() => setEditError(''), 3000);
         if (deleteSuccess) setTimeout(() => setDeleteSuccess(''), 3000);
         if (deleteError) setTimeout(() => setDeleteError(''), 3000);
-    }, [editSuccess, editError, deleteSuccess, deleteError]);
+        if (addSuccess) setTimeout(() => setAddSuccess(''), 3000);
+        if (addError) setTimeout(() => setAddError(''), 3000);
+    }, [editSuccess, editError, deleteSuccess, deleteError, addSuccess, addError]);
 
 
 
@@ -57,7 +69,7 @@ function Rooms() {
                 setDeleteSuccess('Camera Eliminata Correttamente')
                 setDeleteError('')
             } catch (err) {
-                setDeleteError('Errore durante l\'eliminazione della della camera.');
+                setDeleteError('Impossibile eliminare la camera.');
             }
         }
     };
@@ -82,6 +94,18 @@ function Rooms() {
             }
         }
     };
+
+    const handleAddRoom = async () => {
+        try {
+            const addedRoom = await addRoom(newRoom);
+            setRooms([...rooms, addedRoom]);
+            setNewRoom({ roomNumber: '', type: '', price: '', maxPax: '' });
+            setAddSuccess('Camera aggiunta con successo!');
+        } catch (err) {
+            setAddError('Errore durante l\'aggiunta della camera.');
+        }
+    };
+
 
     if (loading) return <div>Caricamento...</div>;
     if (error) return <div>{error}</div>;
@@ -123,6 +147,7 @@ function Rooms() {
                         <p><strong>Tipologia:</strong> {room.type}</p>
                         <p><strong>Prezzo:</strong> €{room.price.toFixed(2)}</p>
                         <p><strong>Max Ospiti:</strong> {room.maxPax}</p>
+                        <p><strong>Status oggi:</strong> {room.status}</p>
                         {/* Sezione Pulsanti */}
                         <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-around' }}>
                             <button
@@ -182,9 +207,38 @@ function Rooms() {
                     Avanti
                 </button>
             </div>
+
+            {addSuccess && <Alert variant="success" dismissible>{addSuccess}</Alert>}
+            {addError && <Alert variant="danger" dismissible>{addError}</Alert>}
+                <div className="d-flex">
+            {/* Form di Aggiunta */}
+            <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
+                <h4>Aggiungi Nuova Camera</h4>
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Numero</Form.Label>
+                        <Form.Control type="number" value={newRoom.roomNumber} onChange={(e) => setNewRoom({ ...newRoom, roomNumber: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Tipologia</Form.Label>
+                        <Form.Control type="text" value={newRoom.type} onChange={(e) => setNewRoom({ ...newRoom, type: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Prezzo</Form.Label>
+                        <Form.Control type="number" value={newRoom.price} onChange={(e) => setNewRoom({ ...newRoom, price: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Max Ospiti</Form.Label>
+                        <Form.Control type="number" value={newRoom.maxPax} onChange={(e) => setNewRoom({ ...newRoom, maxPax: e.target.value })} />
+                    </Form.Group>
+                    <Button variant="primary" onClick={handleAddRoom}>Aggiungi Camera</Button>
+                </Form>
+            </div>
+
+
             {/* Form di Modifica sotto  */}
             {selectedRoom && (
-                <div ref={formRef} className="edit-form-container p-3 border mt-4 w-25">
+                <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50">
                     <h4>Modifica Camera</h4>
                     <Form>
                         <Form.Group className="mb-3">
@@ -228,6 +282,7 @@ function Rooms() {
                     </Form>
                 </div>
             )}
+            </div>
         </div>
     );
 }

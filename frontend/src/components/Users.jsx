@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { fetchAllUsers, deleteUserById, editUserById } from "../data/fetch";
+import { fetchAllUsers, deleteUserById, editUserById, addUser } from "../data/fetch";
 import './Users.css'
 import { Alert, Form, Button } from "react-bootstrap";
 
@@ -14,6 +14,16 @@ function Users() {
   const [editError, setEditError] = useState('');
   const [editSuccess, setEditSuccess] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
+  const [newUser, setNewUser] = useState({
+    name: '',
+    surname: '',
+    username: '',
+    email: '',
+    password: '',
+  });
+  const [addSuccess, setAddSuccess] = useState('');
+  const [addError, setAddError] = useState('');
+
 
   // Effettua la chiamata all'endpoint degli utenti e imposta lo stato
   useEffect(() => {
@@ -39,7 +49,9 @@ function Users() {
     if (editError) setTimeout(() => setEditError(''), 3000);
     if (deleteSuccess) setTimeout(() => setDeleteSuccess(''), 3000);
     if (deleteError) setTimeout(() => setDeleteError(''), 3000);
-  }, [editSuccess, editError, deleteSuccess, deleteError]);
+    if (addSuccess) setTimeout(() => setAddSuccess(''), 3000);
+    if (addError) setTimeout(() => setAddError(''), 3000);
+  }, [editSuccess, editError, deleteSuccess, deleteError, addError, addSuccess]);
 
   // Esegui lo scroll al form di modifica quando selectedRoom cambia
   useEffect(() => {
@@ -57,7 +69,7 @@ function Users() {
         setDeleteSuccess('Utente Eliminato Correttamente')
         setDeleteError('')
       } catch (err) {
-        setDeleteError('Errore durante l\'eliminazione della dell\'utente.');
+        setDeleteError('Impossibile eliminare l\'utente.');
       }
     }
   };
@@ -82,6 +94,18 @@ function Users() {
       }
     }
   };
+
+  const handleAddUser = async () => {
+    try {
+        const addedUser = await addUser(newUser);
+        setUsers([...users, addedUser]);
+        setNewUser({ name: '', surname: '', username: '', email: '', password: '' });
+        setAddSuccess('Utente aggiunto con successo!');
+    } catch (err) {
+        setAddError('Errore durante l\'aggiunta dell\'utente.');
+    }
+};
+
 
   if (loading) return <div>Caricamento...</div>;
   if (error) return <div>{error}</div>;
@@ -132,7 +156,7 @@ function Users() {
             {/* Sezione Pulsanti */}
             <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'space-around' }}>
               <button
-               onClick={() => handleEdit(user)}
+                onClick={() => handleEdit(user)}
                 style={{
                   padding: '5px 10px',
                   fontSize: '12px',
@@ -192,12 +216,44 @@ function Users() {
         </button>
       </div>
 
+      {addSuccess && <Alert variant="success" dismissible>{addSuccess}</Alert>}
+            {addError && <Alert variant="danger" dismissible>{addError}</Alert>}
+                
+            {/* Form di Aggiunta */}
+            <div className="d-flex">
+            <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
+                <h4>Aggiungi Nuovo Utente</h4>
+                <Form>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Nome</Form.Label>
+                        <Form.Control type="text" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Cognome</Form.Label>
+                        <Form.Control type="text" value={newUser.surname} onChange={(e) => setNewUser({ ...newUser, surname: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>E-mail</Form.Label>
+                        <Form.Control type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
+                    </Form.Group>
+                    <Button variant="primary" onClick={handleAddUser}>Aggiungi Utente</Button>
+                </Form>
+            </div>
+
       {editSuccess && <Alert variant="success" dismissible>{editSuccess}</Alert>}
       {editError && <Alert variant="danger" dismissible>{editError}</Alert>}
 
       {/* Form di Modifica sotto  */}
       {selectedUser && (
-        <div ref={formRef} className="edit-form-container p-3 border mt-4 w-25">
+        <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50">
           <h4>Modifica Utente</h4>
           <Form>
             <Form.Group className="mb-3">
@@ -240,8 +296,9 @@ function Users() {
             </div>
           </Form>
         </div>
+        
       )}
-
+</div>
     </div>
   );
 }

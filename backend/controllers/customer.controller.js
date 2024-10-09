@@ -3,8 +3,8 @@ import Booking from '../models/bookingSchema.js'
 
 export const getAllCustomer = async (req, res) => {
     const page = req.query.page || 1;
-    let perPage = req.query.perPage || 20;
-    perPage = perPage > 50 ? 25 : perPage;
+    let perPage = req.query.perPage || 15;
+    perPage = perPage > 15 ? 15 : perPage;
 
     const name = req.query.name; // Prendi il parametro 'name' dalla query string
 

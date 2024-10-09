@@ -53,7 +53,7 @@ function BookingList() {
         // alert('Prenotazione eliminata')
         // setSuccessMessage(message); // Mostra il messaggio di conferma eliminazione
       } catch (err) {
-        setDeleteError('Errore durante l\'eliminazione della prenotazione.');
+        setDeleteError('Impossibile eliminare la prenotazione.');
       }
     }
   };

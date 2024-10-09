@@ -167,7 +167,7 @@ const New = () => {
     // Form per la prenotazione secondo lo schema specificato
     const renderBookingForm = () => {
         return (
-            <Form onSubmit={handleSubmitBooking}>
+            <Form className="w-50" onSubmit={handleSubmitBooking}>
                 <h3>Nuova Prenotazione per {selectedCustomer.name} {selectedCustomer.surname}</h3>
                 <Form.Group controlId="formBookingCheckIn">
                     <Form.Label>Data Check-In</Form.Label>
@@ -205,7 +205,7 @@ const New = () => {
                     <Form.Label>Prezzo Totale (€)</Form.Label>
                     <Form.Control type="number" name="totalPrice" min="0" step="0.01" required />
                 </Form.Group> */}
-                {isRoomsLoaded && (  <Button variant="primary" type="submit" disabled={isBookingLoading}>
+                {isRoomsLoaded && (  <Button className="mt-3" variant="primary" type="submit" disabled={isBookingLoading}>
                 {isBookingLoading ? <Spinner animation="border" size="lg" /> : "Conferma Prenotazione"}
             </Button>)}
             </Form>
@@ -216,7 +216,7 @@ const New = () => {
     // Form per aggiungere un nuovo customer
     const renderNewCustomerForm = () => {
         return ( 
-            <Form onSubmit={handleSubmitNewCustomer}>
+            <Form className="w-50" onSubmit={handleSubmitNewCustomer}>
                 <h3>Aggiungi Nuovo Cliente</h3>
                 <Form.Group controlId="formCustomerName">
                     <Form.Label>Nome</Form.Label>
@@ -238,7 +238,7 @@ const New = () => {
                     <Form.Label>Telfono</Form.Label>
                     <Form.Control type="number" name="phone" placeholder="Inserisci il numero di telefono" required />
                 </Form.Group>
-                <Button variant="primary" type="submit">
+                <Button className="mt-2" variant="primary" type="submit">
                     Aggiungi Cliente
                 </Button>
             </Form>

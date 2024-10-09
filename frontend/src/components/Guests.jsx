@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../context/UserContextProvider";
 import { getAllCustomer, getAllGuests, deleteGuestById, editGuestById } from "../data/fetch";
-import { Container, Spinner, Alert, Table, Button, Modal , Form} from "react-bootstrap";
+import { Container, Spinner, Alert, Table, Button, Modal, Form , Pagination} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import './style.css'
 
@@ -18,7 +18,11 @@ function Guests() {
   const [editSuccess, setEditSuccess] = useState('');
   const [selectedGuest, setSelectedGuest] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const [perPage] = useState(15); // Fissa il numero di elementi per pagina 
+
 
   // Referenza per il form di modifica
   const formRef = useRef(null);
@@ -27,8 +31,10 @@ function Guests() {
   useEffect(() => {
     const fetchGuests = async () => {
       try {
-        const data = await getAllGuests();
-        setGuests(data);
+        const data = await getAllGuests(currentPage, perPage);
+        setGuests(data.dati);
+        setTotalPages(data.totalPages);
+        setTotalResults(data.totalResults);
       } catch (err) {
         setError(err.message || 'Errore durante il recupero degli ospiti.');
       } finally {
@@ -36,21 +42,21 @@ function Guests() {
       }
     };
     fetchGuests();
-  }, []);
+  }, [currentPage,perPage]);
 
   useEffect(() => {
     if (editSuccess) setTimeout(() => setEditSuccess(''), 3000);
     if (editError) setTimeout(() => setEditError(''), 3000);
-    if (deleteSuccess) setTimeout(() => setDeleteSuccess(''), 3000);
-    if (deleteError) setTimeout(() => setDeleteError(''), 3000);
+    if (deleteSuccess) setTimeout(() => setDeleteSuccess(''), 6000);
+    if (deleteError) setTimeout(() => setDeleteError(''), 6000);
   }, [editSuccess, editError, deleteSuccess, deleteError]);
 
-    // Esegui lo scroll al form di modifica quando selectedGuest cambia
-    useEffect(() => {
-      if (selectedGuest && formRef.current) {
-        formRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, [selectedGuest]);
+  // Esegui lo scroll al form di modifica quando selectedGuest cambia
+  useEffect(() => {
+    if (selectedGuest && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [selectedGuest]);
 
   const handleDelete = async (customerId) => {
     if (window.confirm('Sei sicuro di voler eliminare questo ospite?')) {
@@ -60,7 +66,7 @@ function Guests() {
         setDeleteSuccess('Ospite Eliminato Correttamente')
         setDeleteError('')
       } catch (err) {
-        setDeleteError('Errore durante l\'eliminazione della dell ospite.');
+        setDeleteError('Impossibile eliminare l\'ospite.');
       }
     }
   };
@@ -96,6 +102,13 @@ function Guests() {
     navigate(`/guests/${guestId}`); // Reindirizza alla pagina con i dettagli dell'ospite
   };
 
+  // Gestione della navigazione tra pagine
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
   return (<>
     {token && <Container className="mt-5">
       <h2>Lista Ospiti</h2>
@@ -114,7 +127,7 @@ function Guests() {
         </Alert>
       )}
 
-      
+
 
       {/* Gestione dello stato di caricamento e degli errori */}
       {loading ? (
@@ -225,58 +238,75 @@ function Guests() {
           </tbody>
         </Table>
       )}
+      {/* Pagina e Paginazione */}
+      <div className="d-flex justify-content-between align-items-center mt-3">
 
-{editSuccess && <Alert variant="success" dismissible>{editSuccess}</Alert>}
-{editError && <Alert variant="danger" dismissible>{editError}</Alert>}
+        <Pagination>
+          <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+          {[...Array(totalPages)].map((_, index) => (
+            <Pagination.Item
+              key={index + 1}
+              active={index + 1 === currentPage}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </Pagination.Item>
+          ))}
+          <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+        </Pagination>
+      </div>
 
-    
+      {editSuccess && <Alert variant="success" dismissible>{editSuccess}</Alert>}
+      {editError && <Alert variant="danger" dismissible>{editError}</Alert>}
 
-{/* Form di Modifica sotto la Tabella */}
-{selectedGuest && (
-            <div ref={formRef} className="edit-form-container p-3 border mt-4 w-25">
-              <h4>Modifica Ospite</h4>
-              <Form>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nome</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={selectedGuest.name}
-                    onChange={(e) => setSelectedGuest({ ...selectedGuest, name: e.target.value })}
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Cognome</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={selectedGuest.surname}
-                    onChange={(e) => setSelectedGuest({ ...selectedGuest, surname: e.target.value })}
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    type="email"
-                    value={selectedGuest.email}
-                    onChange={(e) => setSelectedGuest({ ...selectedGuest, email: e.target.value })}
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Telefono</Form.Label>
-                  <Form.Control
-                    type="tel"
-                    value={selectedGuest.phone}
-                    onChange={(e) => setSelectedGuest({ ...selectedGuest, phone: e.target.value })}
-                  />
-                </Form.Group>
-                <div className="d-flex justify-content-start">
-                  <Button className="me-1" variant="dark" onClick={() => setSelectedGuest(null)}>X</Button>
-                  <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z"/>
-</svg></Button>
-                </div>
-              </Form>
+
+
+      {/* Form di Modifica sotto la Tabella */}
+      {selectedGuest && (
+        <div ref={formRef} className="edit-form-container p-3 border mt-4 w-25">
+          <h4>Modifica Ospite</h4>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Nome</Form.Label>
+              <Form.Control
+                type="text"
+                value={selectedGuest.name}
+                onChange={(e) => setSelectedGuest({ ...selectedGuest, name: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Cognome</Form.Label>
+              <Form.Control
+                type="text"
+                value={selectedGuest.surname}
+                onChange={(e) => setSelectedGuest({ ...selectedGuest, surname: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                value={selectedGuest.email}
+                onChange={(e) => setSelectedGuest({ ...selectedGuest, email: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Telefono</Form.Label>
+              <Form.Control
+                type="tel"
+                value={selectedGuest.phone}
+                onChange={(e) => setSelectedGuest({ ...selectedGuest, phone: e.target.value })}
+              />
+            </Form.Group>
+            <div className="d-flex justify-content-start">
+              <Button className="me-1" variant="dark" onClick={() => setSelectedGuest(null)}>X</Button>
+              <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+              </svg></Button>
             </div>
-          )}
+          </Form>
+        </div>
+      )}
 
 
     </Container>}

@@ -1,29 +1,55 @@
 import Room from '../models/roomSchema.js'
 import Booking from '../models/bookingSchema.js'
 
-export const getAllRooms = async (req,res)=>{
-    const page = req.query.page || 1
-    let perPage = req.query.perPage || 20
-    perPage = perPage > 20 ? 20 : perPage
+export const getAllRooms = async (req, res) => {
+    const page = req.query.page || 1;
+    let perPage = req.query.perPage || 20;
+    perPage = perPage > 20 ? 20 : perPage;
+
     try {
-        const allRooms = await Room.find({})
-        .collation({locale: 'it'}) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
-        .sort({roomNumber:1}) 
-        .skip((page-1)*perPage)//salto la pagina precedente
-        .limit(perPage)
-        const totalResults = await Room.countDocuments()// mi da il numero totale di documenti
-        const totalPages = Math.ceil(totalResults / perPage )  
+        // Estrazione di tutte le stanze con il limite di paginazione
+        let allRooms = await Room.find({})
+            .collation({ locale: 'it' }) // Ignora maiuscole e minuscole nell'ordinamento
+            .sort({ roomNumber: 1 })
+            .skip((page - 1) * perPage) // Salta la pagina precedente
+            .limit(perPage);
+        
+        // Numero totale di stanze
+        const totalResults = await Room.countDocuments();
+        const totalPages = Math.ceil(totalResults / perPage);
+
+        // Estrazione delle prenotazioni odierne
+        const today = new Date();
+        today.setHours(2, 0, 0, 0); //metto 2 per ovviare al problema del fuso sul mio pc
+
+        const todayBookings = await Booking.find({
+            $and: [
+                { checkInDate: { $lte: today }, checkOutDate: { $gt: today } }
+            ]
+        }).select('room');
+        console.log('Prenotazioni attive oggi:', todayBookings,today);
+
+        // Mappatura delle stanze per modificare lo stato
+        allRooms = allRooms.map(room => {
+            const isAvailable = !todayBookings.find(booking => booking.room.toString() === room._id.toString());
+
+            console.log(`Stanza ${room.roomNumber} (${room._id}): `, isAvailable ? 'Disponibile' : 'Occupata');
+            // Cambia il valore di `status` a "available" o "occupied" in base a `isAvailable`
+            room.status = isAvailable ? 'available' : 'occupied';
+            return room;
+        });
+
+        // Risposta con i dati paginati e lo stato aggiornato
         res.send({
             dati: allRooms,
             totalResults,
             totalPages,
             page,
-
-        })
+        });
     } catch (error) {
-        res.status(404).send({message: 'Not Found'})
-    }  
-}
+        res.status(404).send({ message: 'Not Found' });
+    }
+};
 
 export const getSingleRoom = async (req,res)=>{
     const {id} =req.params

@@ -136,7 +136,8 @@ export const editBooking = async (req, res) => {
             });
         }
 
-        const { checkInDate, checkOutDate, room } = req.body;
+        const { checkInDate, checkOutDate, room , pax} = req.body;
+        const roomData= await Room.findById(room);
 
         // Ottieni la data odierna senza l'orario
         const today = new Date();
@@ -167,7 +168,7 @@ export const editBooking = async (req, res) => {
             // Verifica se la stanza è già occupata nel periodo specificato, ignorando la prenotazione attuale
             const overlappingBooking = await Booking.findOne({
                 _id: { $ne: id }, // Ignora la prenotazione corrente
-                room: room,
+                room: roomData._id,
                 $or: [
                     { checkInDate: { $lt: newCheckOutDate }, checkOutDate: { $gt: newCheckInDate } },
                 ],
@@ -176,6 +177,12 @@ export const editBooking = async (req, res) => {
             if (overlappingBooking) {
                 return res.status(400).send({ message: 'Room is already booked for the selected dates' });
             }
+        }
+
+        const totalPax = +pax.adults + +pax.children
+        console.log(roomData)
+        if (totalPax > roomData.maxPax) {
+            return res.status(400).send({ message: 'Camera non disponibile per il numero di pax richiesto' });
         }
 
         // Aggiorna la prenotazione con i nuovi dati
