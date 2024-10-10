@@ -97,14 +97,14 @@ function Users() {
 
   const handleAddUser = async () => {
     try {
-        const addedUser = await addUser(newUser);
-        setUsers([...users, addedUser]);
-        setNewUser({ name: '', surname: '', username: '', email: '', password: '' });
-        setAddSuccess('Utente aggiunto con successo!');
+      const addedUser = await addUser(newUser);
+      setUsers([...users, addedUser]);
+      setNewUser({ name: '', surname: '', username: '', email: '', password: '' });
+      setAddSuccess('Utente aggiunto con successo!');
     } catch (err) {
-        setAddError('Errore durante l\'aggiunta dell\'utente.');
+      setAddError('Errore durante l\'aggiunta dell\'utente.');
     }
-};
+  };
 
 
   if (loading) return <div>Caricamento...</div>;
@@ -217,88 +217,89 @@ function Users() {
       </div>
 
       {addSuccess && <Alert variant="success" dismissible>{addSuccess}</Alert>}
-            {addError && <Alert variant="danger" dismissible>{addError}</Alert>}
-                
-            {/* Form di Aggiunta */}
-            <div className="d-flex">
-            <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
-                <h4>Aggiungi Nuovo Utente</h4>
-                <Form>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Nome</Form.Label>
-                        <Form.Control type="text" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Cognome</Form.Label>
-                        <Form.Control type="text" value={newUser.surname} onChange={(e) => setNewUser({ ...newUser, surname: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>E-mail</Form.Label>
-                        <Form.Control type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
-                    </Form.Group>
-                    <Button variant="primary" onClick={handleAddUser}>Aggiungi Utente</Button>
-                </Form>
-            </div>
-
+      {addError && <Alert variant="danger" dismissible>{addError}</Alert>}
       {editSuccess && <Alert variant="success" dismissible>{editSuccess}</Alert>}
       {editError && <Alert variant="danger" dismissible>{editError}</Alert>}
 
-      {/* Form di Modifica sotto  */}
-      {selectedUser && (
-        <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50">
-          <h4>Modifica Utente</h4>
+      {/* Form di Aggiunta */}
+      
+        {!selectedUser &&( <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
+          <h4>Aggiungi Nuovo Utente</h4>
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Nome</Form.Label>
-              <Form.Control
-                type="text"
-                value={selectedUser.name}
-                onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
-              />
+              <Form.Control type="text" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Cognome</Form.Label>
-              <Form.Control
-                type="text"
-                value={selectedUser.surname}
-                onChange={(e) => setSelectedUser({ ...selectedUser, surname: e.target.value })}
-              />
+              <Form.Control type="text" value={newUser.surname} onChange={(e) => setNewUser({ ...newUser, surname: e.target.value })} />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Username</Form.Label>
-              <Form.Control
-                type="text"
-                value={selectedUser.username}
-                onChange={(e) => setSelectedUser({ ...selectedUser, username: e.target.value })}
-              />
+              <Form.Control type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Max Ospiti</Form.Label>
-              <Form.Control
-                type="email"
-                value={selectedUser.email}
-                onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
-              />
+              <Form.Label>E-mail</Form.Label>
+              <Form.Control type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
             </Form.Group>
-            <div className="d-flex justify-content-start">
-              <Button className="me-1" variant="dark" onClick={() => setSelectedUser(null)}>X</Button>
-              <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-              </svg></Button>
-            </div>
+            <Form.Group className="mb-3">
+              <Form.Label>Password</Form.Label>
+              <Form.Control type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
+            </Form.Group>
+            <Button variant="primary" onClick={handleAddUser}>Aggiungi Utente</Button>
           </Form>
-        </div>
-        
-      )}
-</div>
+        </div>)}
+
+       
+
+        {/* Form di Modifica sotto  */}
+        {selectedUser && (
+          <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50 mx-auto">
+            <h4>Modifica Utente</h4>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Nome</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={selectedUser.name}
+                  onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Cognome</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={selectedUser.surname}
+                  onChange={(e) => setSelectedUser({ ...selectedUser, surname: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={selectedUser.username}
+                  onChange={(e) => setSelectedUser({ ...selectedUser, username: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Max Ospiti</Form.Label>
+                <Form.Control
+                  type="email"
+                  value={selectedUser.email}
+                  onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+                />
+              </Form.Group>
+              <div className="d-flex justify-content-start">
+                <Button className="me-1" variant="dark" onClick={() => setSelectedUser(null)}>X</Button>
+                <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                </svg></Button>
+              </div>
+            </Form>
+          </div>
+
+        )}
+     
     </div>
   );
 }

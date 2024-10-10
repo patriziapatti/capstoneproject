@@ -27,13 +27,13 @@ export const getAllRooms = async (req, res) => {
                 { checkInDate: { $lte: today }, checkOutDate: { $gt: today } }
             ]
         }).select('room');
-        console.log('Prenotazioni attive oggi:', todayBookings,today);
+        // console.log('Prenotazioni attive oggi:', todayBookings,today);
 
         // Mappatura delle stanze per modificare lo stato
         allRooms = allRooms.map(room => {
             const isAvailable = !todayBookings.find(booking => booking.room.toString() === room._id.toString());
 
-            console.log(`Stanza ${room.roomNumber} (${room._id}): `, isAvailable ? 'Disponibile' : 'Occupata');
+            // console.log(`Stanza ${room.roomNumber} (${room._id}): `, isAvailable ? 'Disponibile' : 'Occupata');
             // Cambia il valore di `status` a "available" o "occupied" in base a `isAvailable`
             room.status = isAvailable ? 'available' : 'occupied';
             return room;

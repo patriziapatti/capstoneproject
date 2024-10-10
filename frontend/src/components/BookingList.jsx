@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContextProvider";
 import { Container, Table, Spinner, Alert, Button, Form, Pagination } from 'react-bootstrap';
-import { getBookingsForPlanning, deleteBookingById } from "../data/fetch";
+import { getBookingsForPlanning, deleteBookingById, getOldBookings } from "../data/fetch";
 import { useNavigate } from 'react-router-dom';
 import EditBookingForm from "./EditBookingForm";
 
@@ -18,6 +18,13 @@ function BookingList() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
   const [perPage] = useState(15); // Fissa il numero di elementi per pagina 
+
+  const [oldBookings, setOldBookings] = useState([]); // Stato per le vecchie prenotazioni
+  const [viewOldBookings, setViewOldBookings] = useState(false); // Controlla se visualizzare le vecchie prenotazioni
+  const [oldCurrentPage, setOldCurrentPage] = useState(1); // Nuovo stato per la pagina corrente
+  const [oldTotalPages, setOldTotalPages] = useState(1); // Nuovo stato per il numero totale di pagine
+  const [oldTotalResults, setOldTotalResults] = useState(0); // Nuovo stato per il numero totale di risultati
+
   const navigate = useNavigate();
 
   // Stato per la prenotazione in modifica
@@ -40,7 +47,34 @@ function BookingList() {
     };
 
     fetchBookings();
-  }, [currentPage, perPage,editingBooking]);
+  }, [currentPage, perPage, editingBooking]);
+
+   // Funzione per recuperare le vecchie prenotazioni con paginazione
+  const fetchOldBookings = async (pageNumber = 1) => {
+    try {
+      const data = await getOldBookings(pageNumber, perPage);
+      setOldBookings(data.dati);
+      setOldTotalPages(data.totalPages);
+      setOldTotalResults(data.totalResults);
+      setOldCurrentPage(pageNumber);
+    } catch (error) {
+      setError('Errore durante il recupero delle vecchie prenotazioni.');
+    }
+  };
+
+  const toggleOldBookings = () => {
+    if (!viewOldBookings) {
+      fetchOldBookings();
+    }
+    setViewOldBookings(!viewOldBookings);
+  };
+
+  // Funzione per cambiare pagina delle prenotazioni storiche
+  const handleOldPageChange = (pageNumber) => {
+    if (pageNumber >= 1 && pageNumber <= oldTotalPages) {
+      fetchOldBookings(pageNumber);
+    }
+  };
 
   //funzione per eliminare la booking
   const handleDelete = async (bookingId) => {
@@ -88,7 +122,7 @@ function BookingList() {
     <>
       {token && (
         <Container className="mt-5">
-          {editingBooking? "" : <h2>Prossime prenotazioni</h2>}
+          {editingBooking ? "" : <h2>Prossime prenotazioni</h2>}
 
           {/* Mostra messaggio di successo per la cancellazione */}
           {deleteSuccess && (
@@ -116,7 +150,7 @@ function BookingList() {
           ) : (
             <>
               {/* Mostra la tabella con i dati delle prenotazioni */}
-             {editingBooking? "" : <Table striped bordered hover>
+              {editingBooking ? "" : <Table striped bordered hover>
                 <thead>
                   <tr>
                     <th>ID Prenotazione</th>
@@ -206,7 +240,7 @@ function BookingList() {
               </Table>}
 
               {/* Pagina e Paginazione */}
-              {editingBooking?  "" : <div className="d-flex justify-content-between align-items-center mt-3">
+              {editingBooking ? "" : <div className="d-flex justify-content-between align-items-center mt-3">
                 {/* <span>
                 Mostrando {bookings.length} di {totalResults} prenotazioni.
               </span> */}
@@ -234,8 +268,75 @@ function BookingList() {
               )}
             </>
           )}
-        </Container>
-      )}
+
+          <Button onClick={toggleOldBookings} className="ml-2 mb-3" variant="link">
+            {viewOldBookings ? ">> Nascondi Prenotazioni Passate" : ">>Visualizza Prenotazioni Passate"}
+          </Button>
+          {/* Visualizzazione della tabella condizionale */}
+          {viewOldBookings && (
+            <div>
+              <h2>Archivio Prenotazioni</h2>
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>ID Prenotazione</th>
+                    <th>Nome Ospite</th>
+                    <th>Data di Arrivo</th>
+                    <th>Data di Partenza</th>
+                    <th>Stanza</th>
+                    <th>Tipologia</th>
+                    <th>Adulti</th>
+                    <th>Bambini</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {oldBookings.map((oldBooking) => (
+                    <tr key={oldBooking._id}>
+                      <td><Button variant="link" style={{ color: 'inherit', padding: 0 }} onClick={() => handleViewDetails(oldBooking._id)}>
+                        {oldBooking._id}
+                      </Button></td>
+                      <td>
+                        <Button
+                          variant="link"
+                          style={{ color: 'inherit', padding: 0 }}
+                          onClick={() => handleViewGuestDetails(oldBooking.customer._id)}
+                        >
+                          {oldBooking.customer.name} {oldBooking.customer.surname}
+                        </Button>
+                      </td>
+                      <td>{new Date(oldBooking.checkInDate).toLocaleDateString()}</td>
+                      <td>{new Date(oldBooking.checkOutDate).toLocaleDateString()}</td>
+                      <td>{oldBooking.room.roomNumber}</td>
+                      <td>{oldBooking.room.type}</td>
+                      <td>{oldBooking.pax.adults}</td>
+                      <td>{oldBooking.pax.children}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              {/* Paginazione per le vecchie prenotazioni */}
+              <div className="d-flex justify-content-between align-items-center mt-3">
+                    <Pagination>
+                      <Pagination.Prev onClick={() => handleOldPageChange(oldCurrentPage - 1)} disabled={oldCurrentPage === 1} />
+                      {[...Array(oldTotalPages)].map((_, index) => (
+                        <Pagination.Item
+                          key={index + 1}
+                          active={index + 1 === oldCurrentPage}
+                          onClick={() => handleOldPageChange(index + 1)}
+                        >
+                          {index + 1}
+                        </Pagination.Item>
+                      ))}
+                      <Pagination.Next onClick={() => handleOldPageChange(oldCurrentPage + 1)} disabled={oldCurrentPage === oldTotalPages} />
+                    </Pagination>
+                  </div>
+               
+            </div>
+          )}
+
+        </Container >
+      )
+      }
     </>
   );
 }

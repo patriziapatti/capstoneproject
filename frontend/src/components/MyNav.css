@@ -1,0 +1,58 @@
+.custom-navbar-height {
+  height: 100px; /* Altezza desiderata */
+  min-height: 100px; /* Altezza minima per garantire uniformità */
+}
+
+.custom-navbar {
+  background-color: #2c3e50;
+  border-bottom: 2px solid #1abc9c;
+}
+
+.nav-link-custom {
+  color: #ecf0f1 !important;
+  margin-right: 15px;
+  transition: color 0.3s ease-in-out;
+  padding-top: 25px; /* Spaziatura interna per aumentare l'altezza */
+  padding-bottom: 25px;
+}
+
+.nav-link-custom:hover {
+  color: #1abc9c !important;
+}
+
+.profile-menu {
+  display: flex;
+  align-items: center;
+}
+
+.user-greeting {
+  color: #1abc9c !important;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.custom-btn {
+  border: 1px solid #1abc9c;
+  color: #ecf0f1;
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-btn:hover {
+  background-color: #1abc9c;
+  color: #2c3e50;
+}
+
+.custom-btn-dark {
+  background-color: #34495e;
+  border: 1px solid #ecf0f1;
+}
+
+.custom-btn-dark:hover {
+  background-color: #1abc9c;
+  color: #2c3e50;
+}
+
+.modal-header-custom {
+  background-color: #34495e;
+  color: #ecf0f1;
+}

@@ -212,6 +212,7 @@ function Rooms() {
             {addError && <Alert variant="danger" dismissible>{addError}</Alert>}
                 <div className="d-flex">
             {/* Form di Aggiunta */}
+            {!selectedRoom && (
             <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
                 <h4>Aggiungi Nuova Camera</h4>
                 <Form>
@@ -233,12 +234,12 @@ function Rooms() {
                     </Form.Group>
                     <Button variant="primary" onClick={handleAddRoom}>Aggiungi Camera</Button>
                 </Form>
-            </div>
+            </div>)}
 
 
             {/* Form di Modifica sotto  */}
             {selectedRoom && (
-                <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50">
+                <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50 mx-auto">
                     <h4>Modifica Camera</h4>
                     <Form>
                         <Form.Group className="mb-3">

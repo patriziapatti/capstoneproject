@@ -246,7 +246,36 @@ export const getBookingsForPlanning = async (page = 1, perPage = 15) => {
     const response = await fetch(`http://localhost:5000/api/bookings/booking-planning?page=${page}&perPage=${perPage}`, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Se l'endpoint richiede autenticazione
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Errore durante il recupero delle prenotazioni');
+    }
+
+    const bookings = await response.json();
+    return bookings;
+  } catch (error) {
+    console.error('Errore durante il recupero delle prenotazioni:', error.message);
+    return {
+      dati: [],
+      totalResults: 0,
+      totalPages: 0,
+      page: 1,
+      perPage: 15,
+    };
+  }
+};
+
+//FETCH PER RECUPERARE LE PRENOTAZIONI CON CHECK IN DA IERI IN POI
+export const getOldBookings = async (page = 1, perPage = 15) => {
+  try {
+    const response = await fetch(`http://localhost:5000/api/bookings/oldbookings?page=${page}&perPage=${perPage}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
     });
 

@@ -307,11 +307,11 @@ export const getTodaysArrivals = async (req, res) => {
     try {
         // Ottieni la data odierna senza l'orario
         const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
+        startOfDay.setUTCHours(0, 0, 0, 0);
 
         // Imposta la fine del giorno
         const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+        endOfDay.setUTCHours(23, 59, 59, 999);
 
         // Trova le prenotazioni in arrivo oggi
         const bookingsArrivingToday = await Booking.find({
@@ -345,11 +345,11 @@ export const getTodaysDeparture = async (req, res) => {
     try {
         // Ottieni la data odierna senza l'orario
         const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
+        startOfDay.setUTCHours(0, 0, 0, 0);
 
         // Imposta la fine del giorno
         const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+        endOfDay.setUTCHours(23, 59, 59, 999);
 
         // Trova le prenotazioni in partenza oggi
         const bookingsDepartingToday = await Booking.find({
@@ -383,16 +383,15 @@ export const getTodaysInHouse = async (req, res) => {
     try {
         // Ottieni la data odierna senza l'orario
         const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-
+        startOfDay.setUTCHours(0, 0, 0, 0);
         // Imposta la fine del giorno
         const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
-
+        endOfDay.setUTCHours(23, 59, 59, 999);
+     
         // Trova le prenotazioni in casa oggi
         const bookingsInHouseToday = await Booking.find({
             checkInDate: { $lte: endOfDay }, // check-in deve essere avvenuto prima della fine di oggi
-            checkOutDate: { $gte: startOfDay }// check-out deve essere dopo l'inizio di oggi
+            checkOutDate: { $gt: startOfDay }// check-out deve essere dopo l'inizio di oggi
         }).populate('customer').populate('room')
             .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
             .sort({ checkInDate: 1 })
@@ -400,7 +399,7 @@ export const getTodaysInHouse = async (req, res) => {
             .limit(perPage)
         const totalResults = await Booking.countDocuments({
             checkInDate: { $lte: endOfDay },
-            checkOutDate: { $gte: startOfDay }
+            checkOutDate: { $gt: startOfDay }
         })// mi da il numero totale delle prenotazioni in casa oggi
         const totalPages = Math.ceil(totalResults / perPage)
 
@@ -422,7 +421,7 @@ export const getBookingsForPlanning = async (req, res) => {
         const today = new Date()
         const yesterday = new Date(today)
         yesterday.setDate(today.getDate() - 1)
-        yesterday.setHours(0, 0, 0, 0)//imposto l'orario a mezzanotte
+        yesterday.setUTCHours(0, 0, 0, 0)//imposto l'orario a mezzanotte
 
         const page = req.query.page || 1
         let perPage = req.query.perPage || 15
@@ -456,19 +455,43 @@ export const getBookingsForPlanning = async (req, res) => {
     }
 }
 
+export const getOldBookings = async (req, res) => {
+    try {
+        //ottengo la data di ieri
+        const today = new Date()
+        const yesterday = new Date(today)
+        yesterday.setDate(today.getDate() - 1)
+        yesterday.setUTCHours(0, 0, 0, 0)//imposto l'orario a mezzanotte
 
+        const page = req.query.page || 1
+        let perPage = req.query.perPage || 15
+        perPage = perPage > 20 ? 15 : perPage
 
+        //trovo le prenotazioni con data di check-in minore di ieri
+        const bookings = await Booking.find({
+            checkInDate: { $lte: yesterday }
+        })
+            .collation({ locale: 'it' }) //serve per ignorare maiuscole e minuscole nell'ordine alfabetico del sort
+            .sort({ checkInDate: -1 })
+            .skip((page - 1) * perPage)//salto la pagina precedente
+            .limit(perPage)
+            .populate('customer').populate('room')
 
-// export const editBooking = async (req, res) => {
-//     const { id } = req.params
-//     try {
-//         const booking = await Booking.findByIdAndUpdate(id, req.body, { new: true }) //new serve per restituire in author l'oggetto appena inserito, altrimenti non lo restituisce
-//         await booking.save();
+        const totalResults = await Booking.countDocuments({
+            checkInDate: { $lte: yesterday }
+        })
 
-//         res.status(200).send(booking)
-//     } catch (error) {
-//         res.status(400).send(error)
-//     }
+        const totalPages = Math.ceil(totalResults / perPage)
 
-// }
+        res.status(200).send({
+            dati: bookings,
+            totalResults,
+            totalPages,
+            page,
+            perPage,
+        })
+    } catch (error) {
+        res.status(500).send({ message: `Errore durante il recupero delle prenotazioni: ${error.message}` })
+    }
+}
 

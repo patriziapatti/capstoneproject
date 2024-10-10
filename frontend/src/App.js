@@ -10,31 +10,31 @@ import SingleBooking from './components/SingleBooking';
 import Guests from './components/Guests';
 import SingleGuest from './components/SingleGuest';
 import Settings from './components/Settings';
+import Footer from './components/Footer';
+
 
 function App() {
+
   return (
     <UserContextProvider>
-    <Router>
-      <MyNav />
-      <Routes>
-        <Route path="/" exact element={<Home />} />
-        <Route path="/new" element={<New />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/bookings" element={<BookingList />} />
-        <Route path="/booking/:id" element={<SingleBooking />} />
-        <Route path="/guests" element={<Guests />} />
-        <Route path="/guests/:id" element={<SingleGuest/>} />
-        <Route path="/settings" element={<Settings/>} />
-        {/* <Route path="/blog/:id" element={<Blog />} />
-        <Route path="/new" element={<NewBlogPost />} />
-        <Route path="/404" element={<NotFound />} />
-        <Route path="/*" element={<Navigate to="/404" />}/> */}
-        {/* <Route path="/blogPosts/:id" element={<SingleBlogPost />} /> */}
-        {  /* <Route path="/authors" element={<AuthorList />} /> da creare */}
-        {  /* <Route path="/authors/:id" element={<SingleAuthor />} /> da creare */}
-      </Routes>
-      {/* <Footer /> */}
-    </Router>
+      <div className="d-flex flex-column min-vh-100">
+        <Router>
+          <MyNav />
+          <main className="flex-grow-1">
+            <Routes>
+              <Route path="/" exact element={<Home />} />
+              <Route path="/new" element={<New />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/bookings" element={<BookingList />} />
+              <Route path="/booking/:id" element={<SingleBooking />} />
+              <Route path="/guests" element={<Guests />} />
+              <Route path="/guests/:id" element={<SingleGuest />} />
+              <Route path="/settings" element={<Settings />} />
+            </Routes>
+          </main>
+          <Footer />
+        </Router>
+      </div>
     </UserContextProvider>
   );
 }

@@ -22,6 +22,10 @@ const New = () => {
         children: 0,
     });
 
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertVariant, setAlertVariant] = useState("success");
+
     const navigate = useNavigate()
 
     // Funzione per gestire la ricerca del customer
@@ -85,7 +89,7 @@ const New = () => {
                     setError("Errore nel caricamento delle stanze disponibili.");
                     setIsRoomsLoaded(false);  // Mantieni lo stato su false in caso di errore
                 }
-                
+
             }
         }
     };
@@ -95,7 +99,7 @@ const New = () => {
 
     // Effettua la fetch delle stanze disponibili in base a date e pax
     // useEffect(() => {
-        
+
     //     fetchAvailableRooms();
     // }, [formData.checkInDate, formData.checkOutDate, formData.adults, formData.children]);
 
@@ -143,7 +147,7 @@ const New = () => {
         const bookingData = {
             customer: selectedCustomer._id,
             room: form.room.value,
-            checkInDate: form.checkInDate.value, 
+            checkInDate: form.checkInDate.value,
             checkOutDate: form.checkOutDate.value,
             pax: {
                 adults: parseInt(form.adults.value),
@@ -154,14 +158,25 @@ const New = () => {
 
         try {
             await addNewBooking(bookingData);
-            alert("Prenotazione aggiunta con successo!");
+            // alert("Prenotazione aggiunta con successo!");
+            showAlertMessage("Prenotazione aggiunta con successo!", "success");
             setIsBookingLoading(false)
-            navigate("/bookings")
+            setTimeout(() => {
+                navigate("/bookings");
+              }, 2000); // Aspetta 2 secondi
         } catch (err) {
             console.error("Errore durante l'aggiunta della prenotazione:", err);
+            // showAlertMessage("Errore durante l'aggiunta della prenotazione.", "danger");
             setError("Errore durante l'aggiunta della prenotazione.");
             setIsBookingLoading(false)
         }
+    };
+
+    const showAlertMessage = (message, variant) => {
+        setAlertMessage(message);
+        setAlertVariant(variant);
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 3000); // Nasconde l'alert dopo 3 secondi
     };
 
     // Form per la prenotazione secondo lo schema specificato
@@ -185,37 +200,37 @@ const New = () => {
                     <Form.Label>Numero di Bambini</Form.Label>
                     <Form.Control type="number" name="children" min="0" value={formData.children} onChange={handleInputChange} required />
                 </Form.Group>
-                <Button className="mt-2"variant="primary" type="button" onClick={handleVerifyRoomClick}>
+                <Button className="mt-2" variant="primary" type="button" onClick={handleVerifyRoomClick}>
                     Verifica Disponibilità
                 </Button>
 
-            {/* Mostra la selezione delle stanze solo se le stanze sono state caricate */}
-            {isRoomsLoaded && (
-                <Form.Group controlId="formBookingRoom">
-                    <Form.Label className="mt-2">Stanze Disponibili</Form.Label>
-                    <Form.Control className="mt-2" as="select" name="room" required>
-                        <option value="">Seleziona una stanza...</option>
-                        {rooms.map((room) => (
-                            <option key={room._id} value={room._id}>{room.roomNumber} - Capacità: {room.maxPax}</option>
-                        ))}
-                    </Form.Control>
-                </Form.Group>
-            )}
+                {/* Mostra la selezione delle stanze solo se le stanze sono state caricate */}
+                {isRoomsLoaded && (
+                    <Form.Group controlId="formBookingRoom">
+                        <Form.Label className="mt-2">Stanze Disponibili</Form.Label>
+                        <Form.Control className="mt-2" as="select" name="room" required>
+                            <option value="">Seleziona una stanza...</option>
+                            {rooms.map((room) => (
+                                <option key={room._id} value={room._id}>{room.roomNumber} - Capacità: {room.maxPax}</option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group>
+                )}
                 {/* <Form.Group controlId="formBookingTotalPrice">
                     <Form.Label>Prezzo Totale (€)</Form.Label>
                     <Form.Control type="number" name="totalPrice" min="0" step="0.01" required />
                 </Form.Group> */}
-                {isRoomsLoaded && (  <Button className="mt-3" variant="primary" type="submit" disabled={isBookingLoading}>
-                {isBookingLoading ? <Spinner animation="border" size="lg" /> : "Conferma Prenotazione"}
-            </Button>)}
+                {isRoomsLoaded && (<Button className="mt-3" variant="primary" type="submit" disabled={isBookingLoading}>
+                    {isBookingLoading ? <Spinner animation="border" size="lg" /> : "Conferma Prenotazione"}
+                </Button>)}
             </Form>
-            
+
         );
     };
 
     // Form per aggiungere un nuovo customer
     const renderNewCustomerForm = () => {
-        return ( 
+        return (
             <Form className="w-50" onSubmit={handleSubmitNewCustomer}>
                 <h3>Aggiungi Nuovo Cliente</h3>
                 <Form.Group controlId="formCustomerName">
@@ -245,9 +260,10 @@ const New = () => {
         );
     };
 
-    return ( <>
+    return (<>
         {token && <Container>
             <h2>Nuova Prenotazione</h2>
+           
             <Form className="d-flex position-relative">
                 <Form.Control
                     type="search"
@@ -258,7 +274,16 @@ const New = () => {
                     value={search}
                     onChange={handleSearch}
                 />
-
+ {showAlert && (
+            <Alert
+              variant={alertVariant}
+              className="text-center w-50 mx-auto mt-3"
+              onClose={() => setShowAlert(false)}
+              dismissible
+            >
+              {alertMessage}
+            </Alert>
+          )}
                 {/* Dropdown menu per mostrare i risultati */}
                 {filteredCustomers.length > 0 && (
                     <Dropdown.Menu show className="w-25 position-absolute" style={{ top: '100%' }}>
@@ -290,7 +315,7 @@ const New = () => {
             {/* Se nessun customer è stato selezionato e vogliamo aggiungere un nuovo customer, mostra il form */}
             {newCustomer && renderNewCustomerForm()}
         </Container>}
-        </>
+    </>
     );
 };
 
