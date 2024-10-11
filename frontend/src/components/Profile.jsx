@@ -113,7 +113,7 @@ function Profile() {
                         required
                       />
                     </Form.Group>
-                    <Button variant="primary" type="submit">
+                    <Button className="btn-bg-color" type="submit">
                       Aggiorna Password
                     </Button>
                   </Form>

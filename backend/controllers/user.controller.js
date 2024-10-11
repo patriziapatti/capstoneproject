@@ -38,28 +38,6 @@ export const getSingleUser = async (req,res)=>{
     } 
 }
 
-// export const addUser = async (req,res)=>{
-//     //crea un nuova istanza del modello user con i dati definiti nella parentesi tonde (prendendoli dal body)
-//     // console.log(req.body)
-//     const user = new User (req.body)
-//     try {
-//          //salva i dati prendendoli nel db , prendendoli dall'istanza
-//         const newUser = await user.save()
-
-//         //invia email accesso e password all'utente creato
-//         await transport.sendMail({
-//             from: 'noreply@epicoders.com',
-//             to: newUser.email,
-//             subject: 'Welcome to PMS',
-//             text: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${newUser.password}`,
-//             html: `Dear ${newUser.name},<br> Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${newUser.password}`,
-//         })
-//         //invia i dati al database
-//         res.status(200).send(newUser)
-//     } catch (error) {
-//         res.status(400).send(error)
-//     }  
-// }
 
 export const addUser = async (req, res) => {
     try {
@@ -78,13 +56,13 @@ export const addUser = async (req, res) => {
         const newUser = await user.save();
 
         // Invia email con username e password 
-        // await transport.sendMail({
-        //     from: 'noreply@epicoders.com',
-        //     to: newUser.email,
-        //     subject: 'Welcome to PMS',
-        //     text: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
-        //     html: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
-        // });
+        await transport.sendMail({
+            from: 'noreply@epicoders.com',
+            to: newUser.email,
+            subject: 'Welcome to PMS',
+            text: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
+            html: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
+        });
 
         // Rispondi con i dati dell'utente creato
         res.status(200).send(newUser);

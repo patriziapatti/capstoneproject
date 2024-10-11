@@ -52,7 +52,7 @@ function MyNav() {
             <Nav.Link as={Link} to={'/profile'} className="user-greeting">
               {userInfo && userInfo.name ? `Ciao, ${userInfo.name}` : ""}
             </Nav.Link>
-            <Button variant="outline-secondary" style={{color: '#1abc9c'}} className="mx-2 custom-btn" onClick={handleNewReservation}>
+            <Button variant="outline-secondary" style={{color: 'white'}} className="mx-2 custom-btn custom-btn-prof" onClick={handleNewReservation}>
               Nuova Prenotazione
             </Button>
 
@@ -72,7 +72,7 @@ function MyNav() {
           <Button variant="secondary" onClick={handleCloseLogoutModal}>
             Annulla
           </Button>
-          <Button variant="primary" onClick={handleLogout}>
+          <Button className="btn-bg-color" onClick={handleLogout}>
             Conferma
           </Button>
         </Modal.Footer>

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { UserContext } from "../context/UserContextProvider";
 import { getAllCustomer, getAllGuests, deleteGuestById, editGuestById } from "../data/fetch";
-import { Container, Spinner, Alert, Table, Button, Modal, Form , Pagination} from "react-bootstrap";
+import { Container, Spinner, Alert, Table, Button, Modal, Form, Pagination } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import './style.css'
 
@@ -23,6 +23,8 @@ function Guests() {
   const [totalResults, setTotalResults] = useState(0);
   const [perPage] = useState(15); // Fissa il numero di elementi per pagina 
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [guestToDelete, setGuestToDelete] = useState(null);
 
   // Referenza per il form di modifica
   const formRef = useRef(null);
@@ -42,7 +44,7 @@ function Guests() {
       }
     };
     fetchGuests();
-  }, [currentPage,perPage]);
+  }, [currentPage, perPage]);
 
   useEffect(() => {
     if (editSuccess) setTimeout(() => setEditSuccess(''), 3000);
@@ -58,16 +60,21 @@ function Guests() {
     }
   }, [selectedGuest]);
 
-  const handleDelete = async (customerId) => {
-    if (window.confirm('Sei sicuro di voler eliminare questo ospite?')) {
-      try {
-        await deleteGuestById(customerId);
-        setGuests(guests.filter((guest) => guest._id !== customerId));
-        setDeleteSuccess('Ospite Eliminato Correttamente')
-        setDeleteError('')
-      } catch (err) {
-        setDeleteError('Impossibile eliminare l\'ospite.');
-      }
+  const handleDelete = (customerId) => {
+    setGuestToDelete(customerId); // Salva l'ID della prenotazione da eliminare
+    setShowDeleteModal(true); // Mostra il modale di conferma
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteGuestById(guestToDelete);
+      setGuests(guests.filter((guest) => guest._id !== guestToDelete));
+      setDeleteSuccess('Ospite Eliminato Correttamente');
+      setDeleteError('');
+    } catch (err) {
+      setDeleteError('Impossibile eliminare l\'ospite.');
+    } finally {
+      setShowDeleteModal(false); // Chiudi il modale dopo l'operazione
     }
   };
 
@@ -140,14 +147,14 @@ function Guests() {
         <Alert variant="danger">{error}</Alert>
       ) : (
         // Mostra la tabella con i dati delle prenotazioni
-        <Table striped bordered hover className="transparent-table">
+        <Table bordered hover className="transparent-table table-titles">
           <thead>
-            <tr>
-              <th>ID Ospite</th>
+            <tr >
+              {/* <th>ID Ospite</th> */}
               <th>Nome Ospite</th>
-              {/* <th>Data di Nascita</th>
-              <th>Telefono</th> */}
-              <th>ID Prenotazioni</th>
+              <th>Data di Nascita</th>
+              {/*<th className="table-titles ">Telefono</th> */}
+              <th>Prenotazioni</th>
               <th>Azioni</th>
             </tr>
           </thead>
@@ -161,20 +168,24 @@ function Guests() {
             ) : (
               guests.map((guest) => (
                 <tr key={guest._id}>
-                  <td> <Button
+                  {/* <td> <Button
                     variant="link" style={{ color: 'inherit', padding: 0 }}
                     onClick={() => handleViewGuestDetails(guest._id)}
                   >
                     {guest._id}
-                  </Button></td>
-                  <td>{guest.name} {guest.surname} </td>
-                  {/* <td>{new Date(guest.dateOfBirth).toLocaleDateString()}</td>
-                  <td>{guest.phone}</td> */}
+                  </Button></td>  */}
+                  <td><Button
+                    variant="link" className="custom-link " style={{ color: 'inherit', padding: 0 }}
+                    onClick={() => handleViewGuestDetails(guest._id)}
+                  >
+                    {guest.surname} {guest.name}</Button></td>
+                  <td>{new Date(guest.dateOfBirth).toLocaleDateString()}</td>
+                  {/*<td>{guest.phone}</td> */}
                   <td>{guest.bookings && guest.bookings.length > 0 ? (
                     guest.bookings.map((booking) => (
                       <div key={booking._id}>
-                        <span><Button variant="link" style={{ color: 'inherit', padding: 0 }} onClick={() => handleViewDetails(booking._id)}>
-                          {booking._id}
+                        <span><Button variant="link" className="custom-link " style={{ color: 'inherit', padding: 0 }} onClick={() => handleViewDetails(booking._id)}>
+                          {booking._id.toUpperCase()}
                         </Button></span>
                       </div>
                     ))
@@ -187,7 +198,7 @@ function Guests() {
                       style={{
                         padding: '5px 10px',
                         fontSize: '12px',
-                        backgroundColor: '#17a2b8',
+                        backgroundColor: '#1abc9c',
                         color: '#fff',
                         border: 'none',
                         borderRadius: '5px',
@@ -205,7 +216,7 @@ function Guests() {
                       style={{
                         padding: '5px 10px',
                         fontSize: '12px',
-                        backgroundColor: '#dc3545',
+                        backgroundColor: '#FFA500',
                         color: '#fff',
                         border: 'none',
                         borderRadius: '5px',
@@ -218,19 +229,7 @@ function Guests() {
                       </svg>
                     </button>
                   </div>
-                    {/* <Button
-                      variant="warning"
-                      className="me-2"
-                      onClick={() => handleEdit(guest._id)}
-                    >
-                      Edit
-                    </Button> */}
-                    {/* <Button
-                      variant="danger"
-                      onClick={() => handleDelete(guest._id)}
-                    >
-                      Delete
-                    </Button> */}
+
                   </td>
                 </tr>
               ))
@@ -241,7 +240,7 @@ function Guests() {
       {/* Pagina e Paginazione */}
       <div className="d-flex justify-content-between align-items-center mt-3">
 
-        <Pagination>
+        <Pagination className="custom-pagination">
           <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
           {[...Array(totalPages)].map((_, index) => (
             <Pagination.Item
@@ -263,7 +262,7 @@ function Guests() {
 
       {/* Form di Modifica sotto la Tabella */}
       {selectedGuest && (
-        <div ref={formRef} className="edit-form-container p-3 border mt-4 w-25">
+        <div ref={formRef} className="edit-form-container p-3 border mt-4 w-25 mx-auto">
           <h4>Modifica Ospite</h4>
           <Form>
             <Form.Group className="mb-3">
@@ -299,8 +298,10 @@ function Guests() {
               />
             </Form.Group>
             <div className="d-flex justify-content-start">
-              <Button className="me-1" variant="dark" onClick={() => setSelectedGuest(null)}>X</Button>
-              <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+              <Button className="me-1 btn-bg-color-orange " onClick={() => setSelectedGuest(null)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+              </svg></Button>
+              <Button className="btn-bg-color" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
                 <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
               </svg></Button>
             </div>
@@ -308,7 +309,20 @@ function Guests() {
         </div>
       )}
 
-
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header className="modal-header-custom" closeButton>
+          <Modal.Title>Conferma Eliminazione</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Sei sicuro di voler eliminare quest'ospite?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Annulla
+          </Button>
+          <Button className="btn-bg-color" onClick={confirmDelete}>
+            Elimina
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>}
   </>)
 }

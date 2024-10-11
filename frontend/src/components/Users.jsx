@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchAllUsers, deleteUserById, editUserById, addUser } from "../data/fetch";
 import './Users.css'
-import { Alert, Form, Button } from "react-bootstrap";
+import { Alert, Form, Button , Modal } from "react-bootstrap";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -24,6 +24,8 @@ function Users() {
   const [addSuccess, setAddSuccess] = useState('');
   const [addError, setAddError] = useState('');
 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
 
   // Effettua la chiamata all'endpoint degli utenti e imposta lo stato
   useEffect(() => {
@@ -61,16 +63,21 @@ function Users() {
   }, [selectedUser]);
 
 
-  const handleDelete = async (userId) => {
-    if (window.confirm('Sei sicuro di voler eliminare questo utente?')) {
-      try {
-        await deleteUserById(userId);
-        setUsers(users.filter((user) => user._id !== userId));
-        setDeleteSuccess('Utente Eliminato Correttamente')
-        setDeleteError('')
-      } catch (err) {
-        setDeleteError('Impossibile eliminare l\'utente.');
-      }
+  const handleDelete = (userId) => {
+    setUserToDelete(userId); // Salva l'ID della prenotazione da eliminare
+    setShowDeleteModal(true); // Mostra il modale di conferma
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteUserById(userToDelete);
+      setUsers(users.filter((user) => user._id !== userToDelete));
+      setDeleteSuccess('Utente Eliminato Correttamente');
+      setDeleteError('');
+    } catch (err) {
+      setDeleteError('Impossibile eliminare l\'utente.');
+    } finally {
+      setShowDeleteModal(false); // Chiudi il modale dopo l'operazione
     }
   };
 
@@ -160,7 +167,7 @@ function Users() {
                 style={{
                   padding: '5px 10px',
                   fontSize: '12px',
-                  backgroundColor: '#17a2b8',
+                  backgroundColor: '#1abc9c',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '5px',
@@ -177,7 +184,7 @@ function Users() {
                 style={{
                   padding: '5px 10px',
                   fontSize: '12px',
-                  backgroundColor: '#dc3545',
+                  backgroundColor: '#FFA500',
                   color: '#fff',
                   border: 'none',
                   borderRadius: '5px',
@@ -199,7 +206,7 @@ function Users() {
         <button
           onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
           disabled={currentPage === 1}
-          style={{ margin: '0 10px' }}
+          style={{ margin: '0 10px', background: '#1abc9c', border: 'none' }}
           className="btn btn-primary"
 
         >
@@ -209,7 +216,7 @@ function Users() {
         <button
           onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
           disabled={currentPage === totalPages}
-          style={{ margin: '0 10px' }}
+          style={{ margin: '0 10px', background: '#1abc9c', border: 'none' }}
           className="btn btn-primary"
         >
           Avanti
@@ -222,84 +229,100 @@ function Users() {
       {editError && <Alert variant="danger" dismissible>{editError}</Alert>}
 
       {/* Form di Aggiunta */}
-      
-        {!selectedUser &&( <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
-          <h4>Aggiungi Nuovo Utente</h4>
+
+      {!selectedUser && (<div className="add-form-container p-3 border mt-4 w-50 mx-auto">
+        <h4>Aggiungi Nuovo Utente</h4>
+        <Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Nome</Form.Label>
+            <Form.Control type="text" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Cognome</Form.Label>
+            <Form.Control type="text" value={newUser.surname} onChange={(e) => setNewUser({ ...newUser, surname: e.target.value })} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Username</Form.Label>
+            <Form.Control type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>E-mail</Form.Label>
+            <Form.Control type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
+          </Form.Group>
+          <Button className="btn-bg-color" onClick={handleAddUser}>Aggiungi Utente</Button>
+        </Form>
+      </div>)}
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header className="modal-header-custom" closeButton>
+          <Modal.Title>Conferma Eliminazione</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Sei sicuro di voler eliminare questo utente?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Annulla
+          </Button>
+          <Button className="btn-bg-color" onClick={confirmDelete}>
+            Elimina
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
+      {/* Form di Modifica sotto  */}
+      {selectedUser && (
+        <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50 mx-auto">
+          <h4>Modifica Utente</h4>
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Nome</Form.Label>
-              <Form.Control type="text" value={newUser.name} onChange={(e) => setNewUser({ ...newUser, name: e.target.value })} />
+              <Form.Control
+                type="text"
+                value={selectedUser.name}
+                onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+              />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Cognome</Form.Label>
-              <Form.Control type="text" value={newUser.surname} onChange={(e) => setNewUser({ ...newUser, surname: e.target.value })} />
+              <Form.Control
+                type="text"
+                value={selectedUser.surname}
+                onChange={(e) => setSelectedUser({ ...selectedUser, surname: e.target.value })}
+              />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Username</Form.Label>
-              <Form.Control type="text" value={newUser.username} onChange={(e) => setNewUser({ ...newUser, username: e.target.value })} />
+              <Form.Control
+                type="text"
+                value={selectedUser.username}
+                onChange={(e) => setSelectedUser({ ...selectedUser, username: e.target.value })}
+              />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>E-mail</Form.Label>
-              <Form.Control type="email" value={newUser.email} onChange={(e) => setNewUser({ ...newUser, email: e.target.value })} />
+              <Form.Label>Max Ospiti</Form.Label>
+              <Form.Control
+                type="email"
+                value={selectedUser.email}
+                onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+              />
             </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" value={newUser.password} onChange={(e) => setNewUser({ ...newUser, password: e.target.value })} />
-            </Form.Group>
-            <Button variant="primary" onClick={handleAddUser}>Aggiungi Utente</Button>
+            <div className="d-flex justify-content-start">
+              <Button className="me-1 btn-bg-color-orange" onClick={() => setSelectedUser(null)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+              </svg></Button>
+              <Button className="btn-bg-color" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+              </svg></Button>
+            </div>
           </Form>
-        </div>)}
+        </div>
 
-       
+      )}
 
-        {/* Form di Modifica sotto  */}
-        {selectedUser && (
-          <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50 mx-auto">
-            <h4>Modifica Utente</h4>
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Nome</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={selectedUser.name}
-                  onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Cognome</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={selectedUser.surname}
-                  onChange={(e) => setSelectedUser({ ...selectedUser, surname: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={selectedUser.username}
-                  onChange={(e) => setSelectedUser({ ...selectedUser, username: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Label>Max Ospiti</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={selectedUser.email}
-                  onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
-                />
-              </Form.Group>
-              <div className="d-flex justify-content-start">
-                <Button className="me-1" variant="dark" onClick={() => setSelectedUser(null)}>X</Button>
-                <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                  <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-                </svg></Button>
-              </div>
-            </Form>
-          </div>
-
-        )}
-     
     </div>
   );
 }

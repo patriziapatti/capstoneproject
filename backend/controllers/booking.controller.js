@@ -425,7 +425,7 @@ export const getBookingsForPlanning = async (req, res) => {
 
         const page = req.query.page || 1
         let perPage = req.query.perPage || 15
-        perPage = perPage > 20 ? 15 : perPage
+        perPage = perPage > 15 ? 15 : perPage
 
         //trovo le prenotazioni con data di check-in maggiore di ieri
         const bookings = await Booking.find({

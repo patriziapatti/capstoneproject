@@ -104,7 +104,7 @@ const handleVerifyRoomClick = () => {
           <Form.Label>Numero di Bambini</Form.Label>
           <Form.Control type="number" name="children" value={formData.children} onChange={handleInputChange} required min="0" />
         </Form.Group>
-        <Button className="mt-2"variant="primary" type="button" onClick={handleVerifyRoomClick}>
+        <Button className="mt-2 btn-bg-color" type="button" onClick={handleVerifyRoomClick}>
                     Verifica Disponibilità
                 </Button>
                 <Form.Group controlId="formBookingRoom">
@@ -117,7 +117,7 @@ const handleVerifyRoomClick = () => {
                     </Form.Control>
                 </Form.Group>
         <div className="mt-4">
-          <Button variant="primary" type="submit" disabled={isSaving}>
+          <Button className="btn-bg-color" type="submit" disabled={isSaving}>
             {isSaving ? <Spinner animation="border" size="sm" /> : "Salva"}
           </Button>
           <Button variant="secondary" className="ms-2" onClick={onCancel}>

@@ -39,7 +39,7 @@ const TodaysHouse = props => {
       {error && <Alert variant="danger">{error}</Alert>}
 
       {!loading && inHouse && inHouse.length > 0 ? (
-        <Table striped bordered hover responsive>
+        <Table  bordered hover responsive className="table-titles"> 
           <thead>
             <tr>
               <th>#</th>

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContextProvider";
-import { Container, Table, Spinner, Alert, Button, Form, Pagination } from 'react-bootstrap';
+import { Container, Table, Spinner, Alert, Button, Form, Pagination , Modal } from 'react-bootstrap';
 import { getBookingsForPlanning, deleteBookingById, getOldBookings } from "../data/fetch";
 import { useNavigate } from 'react-router-dom';
 import EditBookingForm from "./EditBookingForm";
@@ -24,6 +24,9 @@ function BookingList() {
   const [oldCurrentPage, setOldCurrentPage] = useState(1); // Nuovo stato per la pagina corrente
   const [oldTotalPages, setOldTotalPages] = useState(1); // Nuovo stato per il numero totale di pagine
   const [oldTotalResults, setOldTotalResults] = useState(0); // Nuovo stato per il numero totale di risultati
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [bookingToDelete, setBookingToDelete] = useState(null);
 
   const navigate = useNavigate();
 
@@ -49,7 +52,7 @@ function BookingList() {
     fetchBookings();
   }, [currentPage, perPage, editingBooking]);
 
-   // Funzione per recuperare le vecchie prenotazioni con paginazione
+  // Funzione per recuperare le vecchie prenotazioni con paginazione
   const fetchOldBookings = async (pageNumber = 1) => {
     try {
       const data = await getOldBookings(pageNumber, perPage);
@@ -77,18 +80,21 @@ function BookingList() {
   };
 
   //funzione per eliminare la booking
-  const handleDelete = async (bookingId) => {
-    if (window.confirm('Sei sicuro di voler eliminare questa prenotazione?')) {
-      try {
-        await deleteBookingById(bookingId);
-        setBookings(bookings.filter((booking) => booking._id !== bookingId));
-        setDeleteSuccess('Prenotazione Eliminata Correttamente')
-        setDeleteError('')
-        // alert('Prenotazione eliminata')
-        // setSuccessMessage(message); // Mostra il messaggio di conferma eliminazione
-      } catch (err) {
-        setDeleteError('Impossibile eliminare la prenotazione.');
-      }
+  const handleDelete = (bookingId) => {
+    setBookingToDelete(bookingId); // Salva l'ID della prenotazione da eliminare
+    setShowDeleteModal(true); // Mostra il modale di conferma
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await deleteBookingById(bookingToDelete);
+      setBookings(bookings.filter((booking) => booking._id !== bookingToDelete));
+      setDeleteSuccess('Prenotazione Eliminata Correttamente');
+      setDeleteError('');
+    } catch (err) {
+      setDeleteError('Impossibile eliminare la prenotazione.');
+    } finally {
+      setShowDeleteModal(false); // Chiudi il modale dopo l'operazione
     }
   };
 
@@ -150,7 +156,7 @@ function BookingList() {
           ) : (
             <>
               {/* Mostra la tabella con i dati delle prenotazioni */}
-              {editingBooking ? "" : <Table striped bordered hover>
+              {editingBooking ? "" : <Table bordered hover className="table-titles">
                 <thead>
                   <tr>
                     <th>ID Prenotazione</th>
@@ -176,13 +182,13 @@ function BookingList() {
                     bookings.map((booking) => (
                       <tr key={booking._id}>
                         <td>
-                          <Button variant="link" style={{ color: 'inherit', padding: 0 }} onClick={() => handleViewDetails(booking._id)}>
-                            {booking._id}
+                          <Button variant="link" className="custom-link " style={{ color: 'inherit', padding: 0 }} onClick={() => handleViewDetails(booking._id)}>
+                            {booking._id.toUpperCase()}
                           </Button>
                         </td>
                         <td>
                           <Button
-                            variant="link"
+                            variant="link" className="custom-link "
                             style={{ color: 'inherit', padding: 0 }}
                             onClick={() => handleViewGuestDetails(booking.customer._id)}
                           >
@@ -202,7 +208,7 @@ function BookingList() {
                             style={{
                               padding: '5px 10px',
                               fontSize: '12px',
-                              backgroundColor: '#17a2b8',
+                              backgroundColor: '#1abc9c',
                               color: '#fff',
                               border: 'none',
                               borderRadius: '5px',
@@ -220,7 +226,7 @@ function BookingList() {
                             style={{
                               padding: '5px 10px',
                               fontSize: '12px',
-                              backgroundColor: '#dc3545',
+                              backgroundColor: '#FFA500',
                               color: '#fff',
                               border: 'none',
                               borderRadius: '5px',
@@ -244,7 +250,7 @@ function BookingList() {
                 {/* <span>
                 Mostrando {bookings.length} di {totalResults} prenotazioni.
               </span> */}
-                <Pagination>
+                <Pagination className="custom-pagination">
                   <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                   {[...Array(totalPages)].map((_, index) => (
                     <Pagination.Item
@@ -276,7 +282,7 @@ function BookingList() {
           {viewOldBookings && (
             <div>
               <h2>Archivio Prenotazioni</h2>
-              <Table striped bordered hover>
+              <Table bordered hover className="table-titles">
                 <thead>
                   <tr>
                     <th>ID Prenotazione</th>
@@ -292,12 +298,12 @@ function BookingList() {
                 <tbody>
                   {oldBookings.map((oldBooking) => (
                     <tr key={oldBooking._id}>
-                      <td><Button variant="link" style={{ color: 'inherit', padding: 0 }} onClick={() => handleViewDetails(oldBooking._id)}>
-                        {oldBooking._id}
+                      <td><Button variant="link" className="custom-link " style={{ color: 'inherit', padding: 0 }} onClick={() => handleViewDetails(oldBooking._id)}>
+                        {oldBooking._id.toUpperCase()}
                       </Button></td>
                       <td>
                         <Button
-                          variant="link"
+                          variant="link" className="custom-link "
                           style={{ color: 'inherit', padding: 0 }}
                           onClick={() => handleViewGuestDetails(oldBooking.customer._id)}
                         >
@@ -316,24 +322,37 @@ function BookingList() {
               </Table>
               {/* Paginazione per le vecchie prenotazioni */}
               <div className="d-flex justify-content-between align-items-center mt-3">
-                    <Pagination>
-                      <Pagination.Prev onClick={() => handleOldPageChange(oldCurrentPage - 1)} disabled={oldCurrentPage === 1} />
-                      {[...Array(oldTotalPages)].map((_, index) => (
-                        <Pagination.Item
-                          key={index + 1}
-                          active={index + 1 === oldCurrentPage}
-                          onClick={() => handleOldPageChange(index + 1)}
-                        >
-                          {index + 1}
-                        </Pagination.Item>
-                      ))}
-                      <Pagination.Next onClick={() => handleOldPageChange(oldCurrentPage + 1)} disabled={oldCurrentPage === oldTotalPages} />
-                    </Pagination>
-                  </div>
-               
+                <Pagination className="custom-pagination">
+                  <Pagination.Prev onClick={() => handleOldPageChange(oldCurrentPage - 1)} disabled={oldCurrentPage === 1} />
+                  {[...Array(oldTotalPages)].map((_, index) => (
+                    <Pagination.Item
+                      key={index + 1}
+                      active={index + 1 === oldCurrentPage}
+                      onClick={() => handleOldPageChange(index + 1)}
+                    >
+                      {index + 1}
+                    </Pagination.Item>
+                  ))}
+                  <Pagination.Next onClick={() => handleOldPageChange(oldCurrentPage + 1)} disabled={oldCurrentPage === oldTotalPages} />
+                </Pagination>
+              </div>
+
             </div>
           )}
-
+          <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+            <Modal.Header className="modal-header-custom" closeButton>
+              <Modal.Title>Conferma Eliminazione</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>Sei sicuro di voler eliminare questa prenotazione?</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                Annulla
+              </Button>
+              <Button className="btn-bg-color" onClick={confirmDelete}>
+                Elimina
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </Container >
       )
       }

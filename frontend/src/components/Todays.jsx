@@ -67,7 +67,7 @@ const Todays = props => {
       {success && <Alert variant="success">{success}</Alert>}
 
       {!loading && arrivals && arrivals.length > 0 ? (
-        <Table striped bordered hover responsive>
+        <Table  bordered hover responsive className="table-titles">
           <thead>
             <tr>
               <th>#</th>

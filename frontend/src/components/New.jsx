@@ -200,7 +200,7 @@ const New = () => {
                     <Form.Label>Numero di Bambini</Form.Label>
                     <Form.Control type="number" name="children" min="0" value={formData.children} onChange={handleInputChange} required />
                 </Form.Group>
-                <Button className="mt-2" variant="primary" type="button" onClick={handleVerifyRoomClick}>
+                <Button className="mt-2 btn-bg-color" type="button" onClick={handleVerifyRoomClick}>
                     Verifica Disponibilità
                 </Button>
 
@@ -220,7 +220,7 @@ const New = () => {
                     <Form.Label>Prezzo Totale (€)</Form.Label>
                     <Form.Control type="number" name="totalPrice" min="0" step="0.01" required />
                 </Form.Group> */}
-                {isRoomsLoaded && (<Button className="mt-3" variant="primary" type="submit" disabled={isBookingLoading}>
+                {isRoomsLoaded && (<Button className="mt-3 btn-bg-color" variant="primary" type="submit" disabled={isBookingLoading}>
                     {isBookingLoading ? <Spinner animation="border" size="lg" /> : "Conferma Prenotazione"}
                 </Button>)}
             </Form>
@@ -253,7 +253,7 @@ const New = () => {
                     <Form.Label>Telfono</Form.Label>
                     <Form.Control type="number" name="phone" placeholder="Inserisci il numero di telefono" required />
                 </Form.Group>
-                <Button className="mt-2" variant="primary" type="submit">
+                <Button className="mt-2 btn-bg-color" type="submit">
                     Aggiungi Cliente
                 </Button>
             </Form>
@@ -262,7 +262,7 @@ const New = () => {
 
     return (<>
         {token && <Container>
-            <h2>Nuova Prenotazione</h2>
+            <h2 className="pt-3">Nuova Prenotazione</h2>
            
             <Form className="d-flex position-relative">
                 <Form.Control
@@ -304,7 +304,7 @@ const New = () => {
 
             {/* Se non troviamo alcun customer, mostra il pulsante per aggiungerne uno nuovo */}
             {search && !filteredCustomers.length && !selectedCustomer && !newCustomer && (
-                <Button variant="primary" onClick={handleAddNewCustomer}>
+                <Button className="btn-bg-color" onClick={handleAddNewCustomer}>
                     Aggiungi Nuovo Cliente
                 </Button>
             )}

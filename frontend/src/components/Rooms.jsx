@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { fetchAllRooms, deleteRoomById, editRoomById , addRoom} from "../data/fetch";
-import { Alert, Form, Button } from "react-bootstrap";
+import { fetchAllRooms, deleteRoomById, editRoomById, addRoom } from "../data/fetch";
+import { Alert, Form, Button , Modal} from "react-bootstrap";
 
 function Rooms() {
     const [rooms, setRooms] = useState([]);
@@ -23,6 +23,8 @@ function Rooms() {
     const [addError, setAddError] = useState('');
 
 
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [roomToDelete, setRoomToDelete] = useState(null);
 
     // Referenza per il form di modifica
     const formRef = useRef(null);
@@ -61,16 +63,21 @@ function Rooms() {
         }
     }, [selectedRoom]);
 
-    const handleDelete = async (roomId) => {
-        if (window.confirm('Sei sicuro di voler eliminare questa camera?')) {
-            try {
-                await deleteRoomById(roomId);
-                setRooms(rooms.filter((room) => room._id !== roomId));
-                setDeleteSuccess('Camera Eliminata Correttamente')
-                setDeleteError('')
-            } catch (err) {
-                setDeleteError('Impossibile eliminare la camera.');
-            }
+    const handleDelete = (roomId) => {
+        setRoomToDelete(roomId); // Salva l'ID della prenotazione da eliminare
+        setShowDeleteModal(true); // Mostra il modale di conferma
+    };
+
+    const confirmDelete = async () => {
+        try {
+            await deleteRoomById(roomToDelete);
+            setRooms(rooms.filter((room) => room._id !== roomToDelete));
+            setDeleteSuccess('Camera Eliminata Correttamente');
+            setDeleteError('');
+        } catch (err) {
+            setDeleteError('Impossibile eliminare la Camera.');
+        } finally {
+            setShowDeleteModal(false); // Chiudi il modale dopo l'operazione
         }
     };
 
@@ -155,7 +162,7 @@ function Rooms() {
                                 style={{
                                     padding: '5px 10px',
                                     fontSize: '12px',
-                                    backgroundColor: '#17a2b8',
+                                    backgroundColor: '#1abc9c',
                                     color: '#fff',
                                     border: 'none',
                                     borderRadius: '5px',
@@ -172,7 +179,7 @@ function Rooms() {
                                 style={{
                                     padding: '5px 10px',
                                     fontSize: '12px',
-                                    backgroundColor: '#dc3545',
+                                    backgroundColor: '#FFA500',
                                     color: '#fff',
                                     border: 'none',
                                     borderRadius: '5px',
@@ -197,94 +204,110 @@ function Rooms() {
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <button onClick={() => setPage(page - 1)} disabled={page <= 1}
                     className={`btn btn-primary ${page >= totalPages ? 'disabled' : ''}`}
-                    style={{ margin: '0 10px' }}>
+                    style={{ margin: '0 10px', background: '#1abc9c', border: 'none' }}>
                     Indietro
                 </button>
                 <span style={{ margin: '0 10px' }}>Pagina {page} di {totalPages}</span>
                 <button onClick={() => setPage(page + 1)} disabled={page >= totalPages}
                     className={`btn btn-primary ${page >= totalPages ? 'disabled' : ''}`}
-                    style={{ margin: '0 10px' }}>
+                    style={{ margin: '0 10px', background: '#1abc9c', border: 'none' }}>
                     Avanti
                 </button>
             </div>
 
             {addSuccess && <Alert variant="success" dismissible>{addSuccess}</Alert>}
             {addError && <Alert variant="danger" dismissible>{addError}</Alert>}
-                <div className="d-flex">
-            {/* Form di Aggiunta */}
-            {!selectedRoom && (
-            <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
-                <h4>Aggiungi Nuova Camera</h4>
-                <Form>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Numero</Form.Label>
-                        <Form.Control type="number" value={newRoom.roomNumber} onChange={(e) => setNewRoom({ ...newRoom, roomNumber: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Tipologia</Form.Label>
-                        <Form.Control type="text" value={newRoom.type} onChange={(e) => setNewRoom({ ...newRoom, type: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Prezzo</Form.Label>
-                        <Form.Control type="number" value={newRoom.price} onChange={(e) => setNewRoom({ ...newRoom, price: e.target.value })} />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Max Ospiti</Form.Label>
-                        <Form.Control type="number" value={newRoom.maxPax} onChange={(e) => setNewRoom({ ...newRoom, maxPax: e.target.value })} />
-                    </Form.Group>
-                    <Button variant="primary" onClick={handleAddRoom}>Aggiungi Camera</Button>
-                </Form>
-            </div>)}
+            <div className="d-flex">
+                {/* Form di Aggiunta */}
+                {!selectedRoom && (
+                    <div className="add-form-container p-3 border mt-4 w-50 mx-auto">
+                        <h4>Aggiungi Nuova Camera</h4>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Numero</Form.Label>
+                                <Form.Control type="number" value={newRoom.roomNumber} onChange={(e) => setNewRoom({ ...newRoom, roomNumber: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipologia</Form.Label>
+                                <Form.Control type="text" value={newRoom.type} onChange={(e) => setNewRoom({ ...newRoom, type: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Prezzo</Form.Label>
+                                <Form.Control type="number" value={newRoom.price} onChange={(e) => setNewRoom({ ...newRoom, price: e.target.value })} />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Max Ospiti</Form.Label>
+                                <Form.Control type="number" value={newRoom.maxPax} onChange={(e) => setNewRoom({ ...newRoom, maxPax: e.target.value })} />
+                            </Form.Group>
+                            <Button className="btn-bg-color" onClick={handleAddRoom}>Aggiungi Camera</Button>
+                        </Form>
+                    </div>)}
 
-
-            {/* Form di Modifica sotto  */}
-            {selectedRoom && (
-                <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50 mx-auto">
-                    <h4>Modifica Camera</h4>
-                    <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Numero</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={selectedRoom.roomNumber}
-                                onChange={(e) => setSelectedRoom({ ...selectedRoom, roomNumber: e.target.value })}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Tipologia</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={selectedRoom.type}
-                                onChange={(e) => setSelectedRoom({ ...selectedRoom, type: e.target.value })}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Prezzo</Form.Label>
-                            <Form.Control
-                                type="number"
-                                value={selectedRoom.price}
-                                onChange={(e) => setSelectedRoom({ ...selectedRoom, price: e.target.value })}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Max Ospiti</Form.Label>
-                            <Form.Control
-                                type="number"
-                                value={selectedRoom.maxPax}
-                                onChange={(e) => setSelectedRoom({ ...selectedRoom, maxPax: e.target.value })}
-                            />
-                        </Form.Group>
-                        <div className="d-flex justify-content-start">
-                            <Button className="me-1" variant="dark" onClick={() => setSelectedRoom(null)}>X</Button>
-                            <Button variant="success" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
-                                <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
-                            </svg></Button>
-                        </div>
-                    </Form>
-                </div>
-            )}
+                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                    <Modal.Header className="modal-header-custom" closeButton>
+                        <Modal.Title>Conferma Eliminazione</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Sei sicuro di voler eliminare questa camera?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                            Annulla
+                        </Button>
+                        <Button className="btn-bg-color" onClick={confirmDelete}>
+                            Elimina
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                {/* Form di Modifica sotto  */}
+                {selectedRoom && (
+                    <div ref={formRef} className="edit-form-container p-3 border mt-4 w-50 mx-auto">
+                        <h4>Modifica Camera</h4>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Numero</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={selectedRoom.roomNumber}
+                                    onChange={(e) => setSelectedRoom({ ...selectedRoom, roomNumber: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipologia</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={selectedRoom.type}
+                                    onChange={(e) => setSelectedRoom({ ...selectedRoom, type: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Prezzo</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    value={selectedRoom.price}
+                                    onChange={(e) => setSelectedRoom({ ...selectedRoom, price: e.target.value })}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Max Ospiti</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    value={selectedRoom.maxPax}
+                                    onChange={(e) => setSelectedRoom({ ...selectedRoom, maxPax: e.target.value })}
+                                />
+                            </Form.Group>
+                            <div className="d-flex justify-content-start">
+                                <Button className="me-1 btn-bg-color-orange" onClick={() => setSelectedRoom(null)}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                </svg></Button>
+                                <Button className="btn-bg-color" onClick={handleSaveEdit}><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg" viewBox="0 0 16 16">
+                                    <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425z" />
+                                </svg></Button>
+                            </div>
+                        </Form>
+                    </div>
+                )}
             </div>
         </div>
+
     );
 }
 
