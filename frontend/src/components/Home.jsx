@@ -108,38 +108,68 @@ const Home = props => {
       {/* <h1 className="blog-main-title mb-3 text-center pt-5">Benvenuto sul PMS!</h1> */}
       {/* Sezione Login */}
       {!token && (
-        <div className="login-page d-flex align-items-center justify-content-center">
-          <div className="login-box p-4 rounded">
-            <h2 className="mb-4">Accedi al tuo account</h2>
-            <Form >
-              <Form.Group className="mb-3" controlId="formEmail">
-                <Form.Label>Email address</Form.Label>
-                <Form.Control className="custom-search" 
-                  type="email"
-                  name="email"
-                  value={formValue.email}
-                  onChange={handleChange}
-                  placeholder="name@example.com"
-                  required
-                />
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="formPassword">
-                <Form.Label>Password</Form.Label>
-                <Form.Control className="custom-search"
-                  type="password"
-                  name="password"
-                  value={formValue.password}
-                  onChange={handleChange}
-                  placeholder="your password"
-                  required
-                />
-              </Form.Group>
-              <Button variant="primary" style={{background:'#1abc9c', border:'none'}} onClick={handleLogin} className="w-100">
-                Login
-              </Button>
-            </Form>
-          </div>
-        </div>
+     <Container fluid className="login-section">
+     
+     <Row className="align-items-center justify-content-center">
+       {/* Colonna di sinistra con testo */}
+       <Col md={6} className="text-left p-5">
+       <h2
+            style={{
+              fontFamily: "Georgia, serif",
+              fontWeight: "bold",
+              color: "#1abc9c",
+            }}
+          >
+            Ulisse PMS
+          </h2>
+         <h1 className="display-4">Il Miglior Software per l'Hotel Management</h1>
+         <p className="lead">
+         Scopri le soluzioni più affidabili per gestire le operazioni del tuo hotel in modo efficiente.
+         </p>
+       </Col>
+
+       {/* Colonna di destra con il form */}
+       <Col md={6} className="p-5 d-flex justify-content-center">
+         <div className="login-box p-4 rounded shadow-lg" style={{ backgroundColor: "#fff", width: "100%", maxWidth: "400px" }}>
+           <h2 className="mb-4">Accedi al tuo account</h2>
+           <Form>
+             <Form.Group className="mb-3" controlId="formEmail">
+               <Form.Label>Email address</Form.Label>
+               <Form.Control
+                 className="custom-search"
+                 type="email"
+                 name="email"
+                 value={formValue.email}
+                 onChange={handleChange}
+                 placeholder="name@example.com"
+                 required
+               />
+             </Form.Group>
+             <Form.Group className="mb-3" controlId="formPassword">
+               <Form.Label>Password</Form.Label>
+               <Form.Control
+                 className="custom-search"
+                 type="password"
+                 name="password"
+                 value={formValue.password}
+                 onChange={handleChange}
+                 placeholder="your password"
+                 required
+               />
+             </Form.Group>
+             <Button
+               variant="primary"
+               style={{ background: "#1abc9c", border: "none" }}
+               onClick={handleLogin}
+               className="w-100"
+             >
+               Login
+             </Button>
+           </Form>
+         </div>
+       </Col>
+     </Row>
+   </Container>
       )}
  
       {token && (<Row className="my-4 justify-content-center">
