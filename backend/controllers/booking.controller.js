@@ -108,8 +108,8 @@ export const addBooking = async (req, res) => {
                 from: 'noreply@epicoders.com', // sender address
                 to: customer.email, // list of receivers
                 subject: "New Booking", // Subject line
-                text: `Dear ${customer.name}, Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to pay at check-out.`, // plain text body
-                html: `<b>Dear ${customer.name}, <br> Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to pay at check-out.<b>` // html body
+                text: `Dear ${customer.name}, Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to be paid at check-out. We are looking forward to having you as our guest! Please don't hesitate to contact us if you have any questions. Best regards, The [Hotel Name] Team`, // plain text body
+                html: `<b>Dear ${customer.name}, <br> Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! <br> Total price is ${totalPrice}€, to be paid at check-out. <br><br> We are looking forward to having you as our guest!<br>Please don't hesitate to contact us if you have any questions.<br><br>Best regards,<br>The [Hotel Name] Team<b> ` // html body
             })
         } catch (emailError) {
             console.error('Error sending email:', emailError);
@@ -209,8 +209,8 @@ export const editBooking = async (req, res) => {
             from: 'noreply@epicoders.com',
             to: customerEmail,
             subject: "Booking Updated",
-            text: `Dear ${customerName}, Your reservation has been updated. Here are the new details: Check-in from ${checkIn.toLocaleDateString('en-GB')} to ${checkOut.toLocaleDateString('en-GB')}, total price: ${updatedBooking.totalPrice}€.`,
-            html: `<b>Dear ${customerName}, <br> Your reservation has been updated. Here are the new details: Check-in from ${checkIn.toLocaleDateString('en-GB')} to ${checkOut.toLocaleDateString('en-GB')}, total price: ${updatedBooking.totalPrice}€.</b>`
+            text: `Dear ${customerName}, Your reservation has been updated. Here are the new details: Check-in date: ${checkIn.toLocaleDateString('en-GB')}; heck-out date: ${checkOut.toLocaleDateString('en-GB')}. Total price: ${updatedBooking.totalPrice}€, to be paid at check-out. We are looking forward to having you as our guest! Please don't hesitate to contact us if you have any questions or concerns about your updated reservation. Best regards, The [Hotel Name] Team`,
+            html: `<b>Dear ${customerName}, <br> Your reservation has been updated. <br><br>Here are the new details: Check-in date: ${checkIn.toLocaleDateString('en-GB')}; <br> Check-out date: ${checkOut.toLocaleDateString('en-GB')}. <br> Total price: ${updatedBooking.totalPrice}€, to be paid at check-out.<br><br>We are looking forward to having you as our guest!<br>Please don't hesitate to contact us if you have any questions or concerns about your updated reservation.<br><br>Best regards,<br>The [Hotel Name] Team</b>`
         });
 
         res.status(200).send(updatedBooking);

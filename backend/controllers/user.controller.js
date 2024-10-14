@@ -60,8 +60,8 @@ export const addUser = async (req, res) => {
             from: 'noreply@epicoders.com',
             to: newUser.email,
             subject: 'Welcome to PMS',
-            text: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
-            html: `Dear ${newUser.name}, Welcome to PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
+            text: `Dear ${newUser.name}, Welcome to Ulisse PMS! Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
+            html: `Dear ${newUser.name}, Welcome to Ulisse PMS! <br><br> Here's your username and password to login:  ${newUser.username} / ${plainPassword}`,
         });
 
         // Rispondi con i dati dell'utente creato
