@@ -134,7 +134,7 @@ const Home = props => {
            <h2 className="mb-4">Accedi al tuo account</h2>
            <Form>
              <Form.Group className="mb-3" controlId="formEmail">
-               <Form.Label>Email address</Form.Label>
+               <Form.Label>Email</Form.Label>
                <Form.Control
                  className="custom-search"
                  type="email"

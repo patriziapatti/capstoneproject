@@ -108,8 +108,8 @@ export const addBooking = async (req, res) => {
                 from: 'noreply@epicoders.com', // sender address
                 to: customer.email, // list of receivers
                 subject: "New Booking", // Subject line
-                text: `Dear ${customer.name}, Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to be paid at check-out. We are looking forward to having you as our guest! Please don't hesitate to contact us if you have any questions. Best regards, The [Hotel Name] Team`, // plain text body
-                html: `<b>Dear ${customer.name}, <br> Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! <br> Total price is ${totalPrice}€, to be paid at check-out. <br><br> We are looking forward to having you as our guest!<br>Please don't hesitate to contact us if you have any questions.<br><br>Best regards,<br>The [Hotel Name] Team<b> ` // html body
+                text: `Dear ${customer.name}, Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! Total price is ${totalPrice}€, to be paid at check-out. We are looking forward to having you as our guest! Please don't hesitate to contact us if you have any questions. Best regards, The Hotel Team`, // plain text body
+                html: `<b>Dear ${customer.name}, <br> Your Reservation from ${formattedCheckInDate} to ${formattedCheckOutDate} is confirmed! <br> Total price is ${totalPrice}€, to be paid at check-out. <br><br> We are looking forward to having you as our guest!<br>Please don't hesitate to contact us if you have any questions.<br><br>Best regards,<br>The Hotel Team<b> ` // html body
             })
         } catch (emailError) {
             console.error('Error sending email:', emailError);
@@ -209,8 +209,8 @@ export const editBooking = async (req, res) => {
             from: 'noreply@epicoders.com',
             to: customerEmail,
             subject: "Booking Updated",
-            text: `Dear ${customerName}, Your reservation has been updated. Here are the new details: Check-in date: ${checkIn.toLocaleDateString('en-GB')}; heck-out date: ${checkOut.toLocaleDateString('en-GB')}. Total price: ${updatedBooking.totalPrice}€, to be paid at check-out. We are looking forward to having you as our guest! Please don't hesitate to contact us if you have any questions or concerns about your updated reservation. Best regards, The [Hotel Name] Team`,
-            html: `<b>Dear ${customerName}, <br> Your reservation has been updated. <br><br>Here are the new details: Check-in date: ${checkIn.toLocaleDateString('en-GB')}; <br> Check-out date: ${checkOut.toLocaleDateString('en-GB')}. <br> Total price: ${updatedBooking.totalPrice}€, to be paid at check-out.<br><br>We are looking forward to having you as our guest!<br>Please don't hesitate to contact us if you have any questions or concerns about your updated reservation.<br><br>Best regards,<br>The [Hotel Name] Team</b>`
+            text: `Dear ${customerName}, Your reservation has been updated. Here are the new details: Check-in date: ${checkIn.toLocaleDateString('en-GB')}; heck-out date: ${checkOut.toLocaleDateString('en-GB')}. Total price: ${updatedBooking.totalPrice}€, to be paid at check-out. We are looking forward to having you as our guest! Please don't hesitate to contact us if you have any questions or concerns about your updated reservation. Best regards, The Hotel Team`,
+            html: `<b>Dear ${customerName}, <br> Your reservation has been updated. <br><br>Here are the new details: Check-in date: ${checkIn.toLocaleDateString('en-GB')}; <br> Check-out date: ${checkOut.toLocaleDateString('en-GB')}. <br> Total price: ${updatedBooking.totalPrice}€, to be paid at check-out.<br><br>We are looking forward to having you as our guest!<br>Please don't hesitate to contact us if you have any questions or concerns about your updated reservation.<br><br>Best regards,<br>ThemHotel Team</b>`
         });
 
         res.status(200).send(updatedBooking);
@@ -235,8 +235,8 @@ export const deleteBooking = async (req, res) => {
                     from: `noreply@epicoders.com`, // sender address
                     to: customerEmail, // list of receivers
                     subject: "New Booking", // Subject line
-                    text: `Dear ${customerName}, Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled.`, // plain text body
-                    html: `<b>Dear ${customerName}, <br> Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled.<b>` // html body
+                    text: `Dear ${customerName}, Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled. We hope to have the opportunity to welcome you as our guest in the near future. Please don't hesitate to reach out if you need assistance with rebooking or have any further questions. We look forward to hosting you soon. Best regards, The Hotel Team `, // plain text body
+                    html: `<b>Dear ${customerName}, <br> Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled. <br> <br> We hope to have the opportunity to welcome you as our guest in the near future. <br> Please don't hesitate to reach out if you need assistance with rebooking or have any further questions. <br> <br> We look forward to hosting you soon.<br> <br> Best regards,<br> <br> The Hotel Team<b>` // html body
                 })
 
             } catch (emailError) {
