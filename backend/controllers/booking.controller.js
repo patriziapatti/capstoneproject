@@ -234,7 +234,7 @@ export const deleteBooking = async (req, res) => {
                 await transport.sendMail({
                     from: `noreply@epicoders.com`, // sender address
                     to: customerEmail, // list of receivers
-                    subject: "New Booking", // Subject line
+                    subject: "Booking Cancelled", // Subject line
                     text: `Dear ${customerName}, Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled. We hope to have the opportunity to welcome you as our guest in the near future. Please don't hesitate to reach out if you need assistance with rebooking or have any further questions. We look forward to hosting you soon. Best regards, The Hotel Team `, // plain text body
                     html: `<b>Dear ${customerName}, <br> Your Reservation from ${checkInDate} to ${checkOutDate} is cancelled. <br> <br> We hope to have the opportunity to welcome you as our guest in the near future. <br> Please don't hesitate to reach out if you need assistance with rebooking or have any further questions. <br> <br> We look forward to hosting you soon.<br> <br> Best regards,<br> <br> The Hotel Team<b>` // html body
                 })
